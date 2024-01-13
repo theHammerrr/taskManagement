@@ -9,15 +9,20 @@ enum eFilterState {
 
 const ContainerList: React.FC = () => {
     const [filter, setFilter] = useState(eFilterState.NOT_ACTIVE)
+    const [isStatusExpended, setStatusExpended] = useState<boolean>(false)
+
+    const handleStatusExpandClick = () => {
+        setStatusExpended((prevState: boolean) => !prevState)
+    }
 
     return (
         <div className="ContainerList">
             <input type="text" className="SearchList" />
             <div className="filterDropdown">
                 סינון לפי:
-                <button className="dropdownButton">
+                <button className="dropdownButton" onClick={handleStatusExpandClick}>
                     {filter}
-                    <div className="arrow-down"></div>
+                    <div className={isStatusExpended ? "arrow-up" : "arrow-down" }></div>
                 </button>
             </div>
             <Task name="משימה 1"/>

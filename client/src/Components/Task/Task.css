@@ -9,6 +9,11 @@
     align-items: center;
     justify-content: space-between;
     padding: 5px;
+    --icons-opacity: 0;
+}
+
+.task:hover {
+    --icons-opacity: 1;
 }
 
 
@@ -30,6 +35,20 @@
     border-top: 16px solid white;
 }
 
+.arrow-up-task {
+    margin: 1%;
+    height: 0;
+    width: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 16px solid white;
+}
+
+.expend-button {
+    background-color: inherit;
+    border: none;
+}
+
 .task-status {
     background-color: black;
     position: absolute;
@@ -43,4 +62,5 @@
     left: 1%;
     display: flex;
     gap: 10px;
+    opacity: var(--icons-opacity);
 }

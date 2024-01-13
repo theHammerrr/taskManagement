@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import './Task.css'
 
 import pencilIcon from './pencil.svg'
@@ -11,10 +11,18 @@ interface TaskProps {
 const Task: React.FC<TaskProps> = ({
     name
 }: TaskProps) => {
+    const [isExpended, setExpended] = useState<boolean>(false)
+
+    const handleExpandClick = () => {
+        setExpended((prevState: boolean) => !prevState)
+    }
+
     return (
         <div className="task">
             <div className="task-start">
-                <div className="arrow-down-task"></div>
+                <button className="expend-button" onClick={handleExpandClick} >
+                    <div className={isExpended ? "arrow-up-task" : "arrow-down-task" } />
+                </button>
                 <span>{name}</span>
             </div>
             <div className="task-status">פעיל</div>
@@ -27,3 +35,4 @@ const Task: React.FC<TaskProps> = ({
 }
 
 export default Task
+
