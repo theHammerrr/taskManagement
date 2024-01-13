@@ -19,10 +19,14 @@ module.exports = {
             test: /\.css$/,
             use: ['style-loader', 'css-loader'],
          },
+         {
+            test: /\.svg$/,
+            type: 'asset/inline', // or 'asset/resource' for separate files
+          },
       ],
    },
    resolve: {
-      extensions: ['.tsx', '.ts', '.js',],
+      extensions: ['.tsx', '.ts', '.js'],
    },
    plugins: [
       new HtmlWebpackPlugin({
@@ -36,23 +40,23 @@ module.exports = {
    },
    optimization: {
       splitChunks: {
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name(module, chunks, cacheGroupKey) {
-              const moduleFileName = module
-                .identifier()
-                .split('/')
-                .reduceRight(item => item);
-              const allChunksNames = chunks.map((item) => item.name).join('~');
-              return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
+         cacheGroups: {
+            vendor: {
+               test: /[\\/]node_modules[\\/]/,
+               name(module, chunks, cacheGroupKey) {
+                  const moduleFileName = module
+                     .identifier()
+                     .split('/')
+                     .reduceRight(item => item);
+                  const allChunksNames = chunks.map((item) => item.name).join('~');
+                  return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
+               },
+               chunks: 'all',
+               filename: 'vendors-[contenthash].js',
+
             },
-            chunks: 'all',
-            filename: 'vendors-[contenthash].js',
-            
-          },
-        },
+         },
       },
-    },
+   },
 };
 // ?
