@@ -1,0 +1,15 @@
+/* TODO::change font of text (h1) */
+
+.NavBar {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 1%;
+    font-size: 40px;
+    height: 30%;
+    width: 100%;
+}
+
+.Title {
+    font-family: arial;
+}

@@ -1,0 +1,15 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+body {
+  direction: rtl;
+  margin: auto;
+}
+
+.new-task-button {
+  /* background-color: black; */
+  width: 100%;
+}

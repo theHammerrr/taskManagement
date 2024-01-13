@@ -1,0 +1,46 @@
+.task {
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(65, 65, 65);
+    color: white;
+    margin: 1%;
+    width: 70%;
+    font-size: 30px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+
+.task-start {
+    display: flex;
+    flex-direction: row;
+    width: 150px;
+    gap: 10px;
+    align-items: center;
+    margin-right: 1%;
+}
+
+.arrow-down-task {
+    margin: 1%;
+    height: 0;
+    width: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 16px solid white;
+}
+
+.task-status {
+    background-color: black;
+    position: absolute;
+    left: 30%;
+    text-align: center;
+    width: 80px;
+}
+
+.task-icons {
+    position: relative;
+    left: 1%;
+    display: flex;
+    gap: 10px;
+}
