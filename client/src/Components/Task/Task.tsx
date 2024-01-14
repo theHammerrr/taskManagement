@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import './Task.css'
-
 import pencilIcon from './pencil.svg'
 import trashIcon from './trash.svg'
 
-interface TaskProps {
-    name: string
+export enum eFilterState {
+    NOT_ACTIVE = 'לא פעיל',
+    ACTIVE = 'פעיל'
 }
 
-const Task: React.FC<TaskProps> = ({
-    name
-}: TaskProps) => {
+export interface iTask {
+    discription: string, 
+    status: eFilterState
+}
+
+const Task: React.FC<iTask> = ({
+    discription, 
+    status
+}: iTask) => {
     const [isExpended, setExpended] = useState<boolean>(false)
 
     const handleExpandClick = () => {
@@ -23,7 +29,7 @@ const Task: React.FC<TaskProps> = ({
                 <button className="expend-button" onClick={handleExpandClick} >
                     <div className={isExpended ? "arrow-up-task" : "arrow-down-task" } />
                 </button>
-                <span>{name}</span>
+                <span>{discription}</span>
             </div>
             <div className="task-status">פעיל</div>
             <div className="task-icons">

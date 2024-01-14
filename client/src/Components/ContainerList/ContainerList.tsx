@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import './ContainerList.css'
-import Task from "../Task/Task";
-
-enum eFilterState {
-    NOT_ACTIVE = 'לא פעיל',
-    ACTIVE = 'פעיל'
-}
+import Task, { eFilterState } from "../Task/Task";
 
 const ContainerList: React.FC = () => {
     const [filter, setFilter] = useState(eFilterState.NOT_ACTIVE)
@@ -25,8 +20,8 @@ const ContainerList: React.FC = () => {
                     <div className={isStatusExpended ? "arrow-up" : "arrow-down" }></div>
                 </button>
             </div>
-            <Task name="משימה 1"/>
-            <Task name="משימה 2"/>
+            <Task discription="משימה 1"/>
+            <Task discription="משימה 2"/>
         </div>
     )
 }

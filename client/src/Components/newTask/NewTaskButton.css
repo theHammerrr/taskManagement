@@ -1,0 +1,11 @@
+.modal-button {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    background-color: var(--inner-color);
+    border: none;
+}
+
+.modal-button:hover {
+    filter: brightness(80%);
+}
