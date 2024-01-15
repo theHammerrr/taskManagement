@@ -11,7 +11,8 @@ export enum eFilterState {
 export interface iTask {
     discription: string, 
     status: eFilterState, 
-    taskParant: iTask | null
+    // taskParant: iTask | null
+    taskParant: string | null
 }
 
 const Task: React.FC<iTask> = ({

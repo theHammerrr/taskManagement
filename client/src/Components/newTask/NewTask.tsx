@@ -48,15 +48,17 @@ const NewTask: React.FC = () => {
         modalContent: {
             title: "קישור למשימה: ",
             value: "",
-            setValue: (discription: string): void => {
-                setTask({...task, discription})
+            setValue: (taskParant: string): void => {
+                setTask({...task, taskParant})
             }, 
             placeholder: "חיפוש..."
         } as iModalInputProps
     }
 
-    const tempArray: iModalGenericContentProps[] = []
-    tempArray.push(modalInputDiscription)
+    const genericModalArray: iModalGenericContentProps[] = [
+        modalInputDiscription, 
+        modalInputLink,
+    ]
 
     return (
         <>
@@ -65,7 +67,7 @@ const NewTask: React.FC = () => {
             showModal={showModal} 
             onClose={handleCloseModal} 
             title={modalTitle} 
-            contentTypesArray={tempArray} />
+            contentTypesArray={genericModalArray} />
         </>
     )
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import './ModalContentTypes.css'
 
 export enum eContentTypesInModal {
@@ -41,14 +41,27 @@ const ModalInput: React.FC<iModalInputProps> = ({
     value,
     setValue
 }: iModalInputProps) => {
+    const [localValue, setLocalValue] = useState<string>("")
+
+    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value
+        console.log(value);
+        
+
+        setLocalValue(value)
+        setLocalValue(value)
+    }
+
     return (
-        <>
+        <div className="modal-input-container">
             <div className="modal-title">{title}</div>
             <input 
                 className="modal-input" 
                 placeholder={placeholder} 
-                value={value} 
-                onChange={() => console.log(123)}></input>
-        </>
+                value={localValue} 
+                onChange={handleOnChange}
+                >
+                </input>
+        </div>
     )
 }
