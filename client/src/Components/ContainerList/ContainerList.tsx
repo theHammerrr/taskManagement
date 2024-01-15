@@ -20,8 +20,8 @@ const ContainerList: React.FC = () => {
                     <div className={isStatusExpended ? "arrow-up" : "arrow-down" }></div>
                 </button>
             </div>
-            <Task discription="משימה 1"/>
-            <Task discription="משימה 2"/>
+            <Task discription="משימה 1" status={eFilterState.ACTIVE}/>
+            <Task discription="משימה 2" status={eFilterState.ACTIVE}/>
         </div>
     )
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import './ModalContentTypes.css'
 
 export enum eContentTypesInModal {
     INPUT = "input",
@@ -19,32 +20,35 @@ interface iModalContentProps {
 
 
 export interface iModalInputProps extends iModalContentProps {
-
+    placeholder: string
 }
 
 export const ModalComponent: React.FC<iModalGenericContentProps> = ({
     contentType, 
     modalContent
 }: iModalGenericContentProps)  => {
-    console.log(123);
-    
     switch (contentType) {
         case eContentTypesInModal.INPUT:
-            return <ModalInput {...modalContent} />
+            return <ModalInput {...modalContent as iModalInputProps} />
         default:
             return <></>
     }
 }
 
 const ModalInput: React.FC<iModalInputProps> = ({
-    title
+    title,
+    placeholder,
+    value,
+    setValue
 }: iModalInputProps) => {
-    console.log(title);
-    
     return (
         <>
-            <div>{title}</div>
-            <input></input>
+            <div className="modal-title">{title}</div>
+            <input 
+                className="modal-input" 
+                placeholder={placeholder} 
+                value={value} 
+                onChange={() => console.log(123)}></input>
         </>
     )
 }

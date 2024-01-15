@@ -1,11 +1,27 @@
 import React, { useState } from "react";
 import NewTaskButton from "./NewTaskButton";
 import NewTaskModal from "../Modal/Modal";
-import { iModalGenericContentProps, eContentTypesInModal } from "../Modal/ModalContentTypes";
+import { 
+    iModalGenericContentProps,
+    eContentTypesInModal, 
+    iModalInputProps 
+} from "../Modal/ModalContentTypes";
+
+import { eFilterState, iTask } from "../Task/Task";
 
 const NewTask: React.FC = () => {
     const [showModal, setShowModal] = useState<boolean>(false)
+    const [task, setTask] = useState<iTask>({
+        discription: "", 
+        status: eFilterState.NOT_ACTIVE, 
+        taskParant: null
+    })
+    
     const modalTitle = "יצירת משימה"
+    
+    // const handleSetTask = ({...value}) => {
+    //     setTask({...value, ...task})
+    // }
 
     const handleOpenModal = () => {
         setShowModal(true)
@@ -15,19 +31,32 @@ const NewTask: React.FC = () => {
         setShowModal(false)
     }
 
-    const modalInputProps: iModalGenericContentProps = {
+    const modalInputDiscription: iModalGenericContentProps = {
         contentType: eContentTypesInModal.INPUT,
         modalContent: {
-            title: "asd",
+            title: "שם:",
             value: "",
-            setValue: function (value: string): void {
-                throw new Error("Function not implemented.");
-            }
-        }
+            setValue: (discription: string): void => {
+                setTask({...task, discription})
+            }, 
+            placeholder: "שם"
+        } as iModalInputProps
+    }
+
+    const modalInputLink: iModalGenericContentProps = {
+        contentType: eContentTypesInModal.INPUT,
+        modalContent: {
+            title: "קישור למשימה: ",
+            value: "",
+            setValue: (discription: string): void => {
+                setTask({...task, discription})
+            }, 
+            placeholder: "חיפוש..."
+        } as iModalInputProps
     }
 
     const tempArray: iModalGenericContentProps[] = []
-    tempArray.push(modalInputProps)
+    tempArray.push(modalInputDiscription)
 
     return (
         <>

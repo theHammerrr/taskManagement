@@ -1,7 +1,6 @@
 .task {
     display: flex;
     flex-direction: row;
-    /* background-color: rgb(65, 65, 65); */
     background-color: var(--inner-color);
     color: white;
     margin: 1%;

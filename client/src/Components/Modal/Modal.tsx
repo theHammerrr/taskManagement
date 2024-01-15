@@ -1,13 +1,14 @@
 import React from "react";
 import './Modal.css'
+import {v4 as uuidv4} from 'uuid';
+
 import {
     ModalComponent,
     eContentTypesInModal,
-    iModalInputProps,
     iModalGenericContentProps
 } from "./ModalContentTypes";
 
-interface iTaskModal {
+interface iModalProps {
     onClose: () => void,
     showModal: boolean,
     title: string,
@@ -15,38 +16,27 @@ interface iTaskModal {
 }
 
 
-const Modal: React.FC = ({
+const Modal: React.FC<iModalProps> = ({
     onClose,
     showModal = false,
     title,
-    contentTypesArray = []
-}: iTaskModal) => {
-    // console.log(contentTypesArray);
-    
-
+    contentTypesArray = [], 
+}: iModalProps) => {
     return (
         <div className={(showModal ? "show-modal" : "hide-modal") + " modal"}>
             <div className="modal-content">
                 <div className="title">{title}</div>
-                {/* <ModalComponent type={eContentTypesInModal.INPUT} iModalInputProps={{title: "asd"}} > */}
-                {/* <ModalComponent contentType={eContentTypesInModal.INPUT} modalContent={modalInputProps}> */}
-                {/* asd */}
-                {/* </ModalComponent> */}
-                {/* <>
-                    ${getModalComponent(eContentTypesInModal.INPUT, modalInputProps)}
-                </> */}
                 {
-                    contentTypesArray.forEach((genericContent) => 
+                    contentTypesArray.map((genericContent) => 
                             <ModalComponent
+                                key={uuidv4()}
                                 contentType={eContentTypesInModal.INPUT}
-                                // modalContent={genericContent.modalContent}
-                                 />
-                        
+                                modalContent={genericContent.modalContent}
+                            />
                     )
                 }
-                {/* <ModalComponent contentType={eContentTypesInModal.INPUT} ></ModalComponent> */}
 
-                <button className="close" onClick={onClose}>&times;</button>
+                {/* <button className="close" onClick={onClose}>&times;</button> */}
             </div>
         </div>
     )

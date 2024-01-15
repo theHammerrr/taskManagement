@@ -10,12 +10,14 @@ export enum eFilterState {
 
 export interface iTask {
     discription: string, 
-    status: eFilterState
+    status: eFilterState, 
+    taskParant: iTask | null
 }
 
 const Task: React.FC<iTask> = ({
     discription, 
-    status
+    status, 
+    taskParant = null
 }: iTask) => {
     const [isExpended, setExpended] = useState<boolean>(false)
 
@@ -31,7 +33,7 @@ const Task: React.FC<iTask> = ({
                 </button>
                 <span>{discription}</span>
             </div>
-            <div className="task-status">פעיל</div>
+            <div className="task-status">{status}</div>
             <div className="task-icons">
                 <img src={pencilIcon} />
                 <img src={trashIcon} />

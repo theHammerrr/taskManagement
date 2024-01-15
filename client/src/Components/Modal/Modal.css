@@ -12,6 +12,7 @@
 .hide-modal {
     /* TODO: change to none */
     display: flex;
+    /* display: none; */
 }
 
 .show-modal {
@@ -19,12 +20,13 @@
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: #f2f2f2;
     margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
-    height: 40%;
+    border: 1px solid #bbbaba;
+    height: 70%;
     width: 35%;
+    border-radius: 2%;
 }
 
 .title {
