@@ -5,8 +5,8 @@ import trashIcon from './trash.svg'
 import TaskModal from "./TaskModal";
 
 export enum eFilterState {
-    NOT_ACTIVE = 'לא פעיל',
-    ACTIVE = 'פעיל'
+    ACTIVE = 'פעיל',
+    COMPLETED = 'הושלם'
 }
 
 export interface iTask {

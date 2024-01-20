@@ -17,7 +17,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
     const [task, setTask] = useState<iTask>(currentTask ? currentTask : {
         id: -1,
         discription: "",
-        status: eFilterState.NOT_ACTIVE
+        status: eFilterState.ACTIVE
     })
 
     type taskProperties = keyof iTask;

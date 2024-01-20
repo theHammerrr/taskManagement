@@ -12,12 +12,12 @@ let tempTaskList: iTask[] = [
     {
         id: 2,
         discription: "משימה 1",
-        status: eFilterState.NOT_ACTIVE
+        status: eFilterState.COMPLETED
     }
 ]
 
 const ContainerList: React.FC = () => {
-    const [filter, setFilter] = useState(eFilterState.NOT_ACTIVE)
+    const [filter, setFilter] = useState(eFilterState.ACTIVE)
     const [isDropdownExpended, setIsDropdownExpended] = useState<boolean>(false)
     const [taskList, setTaskList] = useState<iTask[]>(tempTaskList)
 
@@ -33,7 +33,7 @@ const ContainerList: React.FC = () => {
     }
 
     const handleRemoveTask = (task: iTask) => {
-        setTaskList(() => 
+        setTaskList(() =>
             taskList.filter(currentTask => task.id !== currentTask.id)
         )
     }
@@ -45,7 +45,10 @@ const ContainerList: React.FC = () => {
                 <span >
                     סינון לפי:
                 </span>
-                <DropdownFilter currentFilter={filter} handleChangeFilter={handleChangeFilter} isExpended={isDropdownExpended} />
+                <DropdownFilter
+                    currentFilter={filter}
+                    handleChangeFilter={handleChangeFilter}
+                    isExpended={isDropdownExpended} />
             </div>
             {
                 taskList.map((currentTask: iTask) =>
