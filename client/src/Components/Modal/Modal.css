@@ -10,16 +10,6 @@
     align-items: center;
 }
 
-/* .modal {
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 30%;
-    background-color: #f2f2f2;
-    padding: 20px;
-
-} */
-
 .hide-modal {
     /* TODO: change to none */
     /* display: flex; */
@@ -59,9 +49,6 @@
     cursor: pointer;
     border: none;
     color: white;
-    /* min-width: 30px; */
-    /* width: 15%; */
-    
 }
 
 .modal-save {

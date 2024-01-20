@@ -8,7 +8,8 @@ export type tTaskModalProps = Omit<iModalProps, "contentTypesArray">
 const TaskModal: React.FC<tTaskModalProps> = ({
     onClose,
     showModal,
-    title
+    title,
+    onSave
 }) => {
     const [task, setTask] = useState<iTask>({
         discription: "",
@@ -25,12 +26,14 @@ const TaskModal: React.FC<tTaskModalProps> = ({
                 [property]: event.currentTarget.value
             })
     }
+
     
     return (
         <Modal
             showModal={showModal}
             onClose={onClose}
             title={title}
+            onSave={onSave}
         >
             <div className="input-container">
                 <span>שם:</span>

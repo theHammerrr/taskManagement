@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import NewTaskButton from "./NewTaskButton";
+import newTaskIcon from './newTask.svg'
 import TaskModal from "../Task/TaskModal";
+import './NewTask.css'
 
 const NewTask: React.FC = () => {
     const [showModal, setShowModal] = useState<boolean>(false)
@@ -16,11 +17,14 @@ const NewTask: React.FC = () => {
 
     return (
         <>
-            <NewTaskButton onClick={handleOpenModal} />
+            <button className="modal-button" onClick={handleOpenModal}>
+                <img src={newTaskIcon} />
+            </button>
             <TaskModal
                 showModal={showModal}
                 onClose={handleCloseModal}
-                title={modalTitle} ><>asd</></TaskModal>
+                title={modalTitle} 
+                onSave={handleCloseModal}><>asd</></TaskModal>
         </>
     )
 }
