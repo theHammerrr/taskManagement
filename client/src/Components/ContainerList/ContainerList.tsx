@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import './ContainerList.css'
-import Task, { eFilterState } from "../Task/Task";
+import Task, { eFilterState, iTask } from "../Task/Task";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
+
+const taskList: iTask[] = [
+    {
+        discription: "משימה 1",
+        status: eFilterState.ACTIVE
+    },
+    {
+        discription: "משימה 1",
+        status: eFilterState.NOT_ACTIVE
+    }
+]
 
 const ContainerList: React.FC = () => {
     const [filter, setFilter] = useState(eFilterState.NOT_ACTIVE)
@@ -27,8 +38,11 @@ const ContainerList: React.FC = () => {
                 </span>
                 <DropdownFilter currentFilter={filter} handleChangeFilter={handleChangeFilter} isExpended={isDropdownExpended} />
             </div>
-            <Task discription="משימה 1" status={eFilterState.ACTIVE} />
-            <Task discription="משימה 2" status={eFilterState.ACTIVE} />
+            {/* <Task discription="משימה 1" status={eFilterState.ACTIVE} />
+            <Task discription="משימה 2" status={eFilterState.ACTIVE} /> */}
+            {
+                taskList.map((currentTask: iTask) => <Task {...currentTask} />)
+            }
         </div>
     )
 }
