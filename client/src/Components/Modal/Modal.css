@@ -32,12 +32,12 @@
 
 .modal-content {
     background-color: #f2f2f2;
-    margin: 5% auto;
     padding: 20px;
-    border: 1px solid #bbbaba;
-    height: 70vh;
+    --modal-height: 70vh;
+    height: var(--modal-height);
     width: 30%;
     border-radius: 2%;
+    position: relative;
 }
 
 .title {
@@ -47,14 +47,27 @@
 }
 
 .modal-bottom-buttons {
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    margin-top: 40vh;
+    position: absolute;
+    right: 65%;
+    bottom: 5%;
 }
 
 .modal-bottom-buttons button {
     margin-left: 10px;
-    padding: 8px 16px;
+    padding: 8px 25px;
+    height: 30px;
     cursor: pointer;
+    border: none;
+    color: white;
+    /* min-width: 30px; */
+    /* width: 15%; */
+    
+}
+
+.modal-save {
+    background-color: #4981d8;
+}
+
+.modal-close {
+    background-color: #453d41;
 }
