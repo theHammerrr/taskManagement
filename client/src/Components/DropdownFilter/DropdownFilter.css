@@ -2,11 +2,6 @@
 .filter {
     width: 20%;
     height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 1%;
 }
 
 .filter-dropdown {

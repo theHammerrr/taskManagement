@@ -21,7 +21,12 @@ const ContainerList: React.FC = () => {
     return (
         <div className="ContainerList">
             <input type="text" className="SearchList" />
-            <DropdownFilter currentFilter={filter} handleChangeFilter={handleChangeFilter} isExpended={isDropdownExpended} />
+            <div className="filter-container">
+                <span >
+                    סינון לפי:
+                </span>
+                <DropdownFilter currentFilter={filter} handleChangeFilter={handleChangeFilter} isExpended={isDropdownExpended} />
+            </div>
             <Task discription="משימה 1" status={eFilterState.ACTIVE} taskParant={null} />
             <Task discription="משימה 2" status={eFilterState.ACTIVE} taskParant={null} />
         </div>
