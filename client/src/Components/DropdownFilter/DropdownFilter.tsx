@@ -1,33 +1,37 @@
 import React, { useState } from "react";
-import './ContainerList.css'
-import Task, { eFilterState } from "../Task/Task";
-import DropdownFilter from "../DropdownFilter/DropdownFilter";
+import { eFilterState } from "../Task/Task";
 
-const ContainerList: React.FC = () => {
-    const [filter, setFilter] = useState(eFilterState.NOT_ACTIVE)
+interface iDropdownFilterProps {
+    currentFilter: eFilterState, 
+    handleChangeFilter: (status: eFilterState) => void, 
+    isExpended: boolean
+}
+
+const DropdownFilter: React.FC<iDropdownFilterProps> = ({
+   currentFilter, 
+   handleChangeFilter
+}: iDropdownFilterProps) => {
     const [isDropdownExpended, setIsDropdownExpended] = useState<boolean>(false)
 
     const handleExpandClick = () => {
         setIsDropdownExpended((prevState: boolean) => !prevState)
     }
 
-    const handleChangeFilter = (value: eFilterState) => {
-        if (value === filter) return;
+    const handleClickFilter = (value: eFilterState) => {
+        handleChangeFilter(value)
+        if (value === currentFilter) return;
 
         setIsDropdownExpended(false)
-        setFilter(value)
     }
-
+    
     return (
-        <div className="ContainerList">
-            <input type="text" className="SearchList" />
-            {/* <div className="filter">
+        <div className="filter">
                 <span>
                     סינון לפי:
                 </span>
                 <div className="filter-dropdown">
                     <button className="dropdown-button" onClick={handleExpandClick}>
-                        <span className="filter-state">{filter}</span>
+                        <span className="filter-state">{currentFilter}</span>
                         <div className={(isDropdownExpended ? "arrow-up" : "arrow-down") + " arrow-filter"} />
                     </button>
                     <div className={
@@ -38,19 +42,15 @@ const ContainerList: React.FC = () => {
                         {Object.values(eFilterState).map((status) =>
                             <button
                                 key={status}
-                                className={(status === filter ? "chosen-status" : "") + " dropdown-item"}
-                                onClick={() => handleChangeFilter(status)}>
+                                className={(status === currentFilter ? "chosen-status" : "") + " dropdown-item"}
+                                onClick={() => handleClickFilter(status)}>
                                 <span >{status}</span>
                             </button>
                         )}
                     </div>
                 </div>
-            </div> */}
-            <DropdownFilter currentFilter={filter} handleChangeFilter={handleChangeFilter} isExpended={isDropdownExpended} />
-            <Task discription="משימה 1" status={eFilterState.ACTIVE} taskParant={null} />
-            <Task discription="משימה 2" status={eFilterState.ACTIVE} taskParant={null} />
-        </div>
+            </div>
     )
 }
 
-export default ContainerList
+export default DropdownFilter
