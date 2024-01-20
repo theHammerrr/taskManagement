@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import './Task.css'
 import pencilIcon from './pencil.svg'
 import trashIcon from './trash.svg'
+import TaskModal from "./TaskModal";
 
 export enum eFilterState {
     NOT_ACTIVE = 'לא פעיל',
@@ -26,6 +27,16 @@ const Task: React.FC<iTask> = ({
         setExpended((prevState: boolean) => !prevState)
     }
 
+    const openEditTaskModal = () => {
+        return(
+            <TaskModal onClose={function (): void {
+                throw new Error("Function not implemented.");
+            } } onSave={function (): void {
+                throw new Error("Function not implemented.");
+            } } showModal={true} title={""} />
+        )
+    }
+
     return (
         <div className="task">
             <div className="task-start">
@@ -36,9 +47,14 @@ const Task: React.FC<iTask> = ({
             </div>
             <div className="task-status">{status}</div>
             <div className="task-icons">
-                <img src={pencilIcon} />
+                <img src={pencilIcon} onClick={openEditTaskModal}/>
                 <img src={trashIcon} />
             </div>
+            <TaskModal onClose={function (): void {
+                throw new Error("Function not implemented.");
+            } } onSave={function (): void {
+                throw new Error("Function not implemented.");
+            } } showModal={false} title={""} />
         </div>
     )
 }

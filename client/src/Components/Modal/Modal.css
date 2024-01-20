@@ -10,16 +10,6 @@
     align-items: center;
 }
 
-.hide-modal {
-    /* TODO: change to none */
-    /* display: flex; */
-    display: none;
-}
-
-.show-modal {
-    display: flex;
-}
-
 .modal-content {
     background-color: #f2f2f2;
     padding: 20px;

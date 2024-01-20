@@ -18,16 +18,21 @@ const Modal: React.FC<iModalProps> = ({
     onSave
 }: iModalProps) => {
     return (
-        <div className={(showModal ? "show-modal" : "hide-modal") + " modal-overlay"}>
-            <div className="modal-content">
-                <div className="title">{title}</div>
-                {children}
-                <div className="modal-bottom-buttons">
-                    <button className="modal-close" onClick={onClose}>ביטול</button>
-                    <button className="modal-save" onClick={onSave}>שמירה</button>
+        <>
+            {
+                showModal &&
+                <div className={"modal-overlay"}>
+                    <div className="modal-content">
+                        <div className="title">{title}</div>
+                        {children}
+                        <div className="modal-bottom-buttons">
+                            <button className="modal-close" onClick={onClose}>ביטול</button>
+                            <button className="modal-save" onClick={onSave}>שמירה</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            }
+        </>
     )
 }
 

@@ -24,7 +24,7 @@ const NewTask: React.FC = () => {
                 showModal={showModal}
                 onClose={handleCloseModal}
                 title={modalTitle} 
-                onSave={handleCloseModal}><>asd</></TaskModal>
+                onSave={handleCloseModal} />
         </>
     )
 }
