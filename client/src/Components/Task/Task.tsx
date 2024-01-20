@@ -10,19 +10,32 @@ export enum eFilterState {
 }
 
 export interface iTask {
+    id: number,
     discription: string,
     status: eFilterState,
-    taskParant?: iTask
+    taskParant?: iTask, 
 }
 
-const Task: React.FC<iTask> = ({
+interface iTaskProps extends iTask {
+    onRemoveTask: (task: iTask) => void
+}
+
+const Task: React.FC<iTaskProps> = ({
+    id,
     discription,
-    status
-}: iTask) => {
+    status,
+    onRemoveTask
+}: iTaskProps) => {
     const [isExpended, setExpended] = useState<boolean>(false)
     const [isEditTask, setEditTask] = useState<boolean>(false)
 
     const editModalTitle = "עריכת משימה"
+    const currentTask: iTask = {
+        id,
+        discription, 
+        status
+    }
+
     const handleExpandClick = () => {
         setExpended((prevState: boolean) => !prevState)
     }
@@ -47,7 +60,7 @@ const Task: React.FC<iTask> = ({
                 <div className="task-status">{status}</div>
                 <div className="task-icons">
                     <img src={pencilIcon} onClick={openEditTaskModal} />
-                    <img src={trashIcon} />
+                    <img src={trashIcon} onClick={() => onRemoveTask(currentTask)}/>
                 </div>
             </div>
             <TaskModal
@@ -55,7 +68,7 @@ const Task: React.FC<iTask> = ({
                 onSave={closeEditTaskModal}
                 showModal={isEditTask}
                 title={editModalTitle} 
-                currentTask={{discription,status}} />
+                currentTask={currentTask} />
         </>
     )
 }

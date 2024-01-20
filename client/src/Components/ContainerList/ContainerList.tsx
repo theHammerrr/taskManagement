@@ -3,12 +3,14 @@ import './ContainerList.css'
 import Task, { eFilterState, iTask } from "../Task/Task";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
 
-const taskList: iTask[] = [
+let tempTaskList: iTask[] = [
     {
+        id: 1,
         discription: "משימה 1",
         status: eFilterState.ACTIVE
     },
     {
+        id: 2,
         discription: "משימה 1",
         status: eFilterState.NOT_ACTIVE
     }
@@ -17,6 +19,7 @@ const taskList: iTask[] = [
 const ContainerList: React.FC = () => {
     const [filter, setFilter] = useState(eFilterState.NOT_ACTIVE)
     const [isDropdownExpended, setIsDropdownExpended] = useState<boolean>(false)
+    const [taskList, setTaskList] = useState<iTask[]>(tempTaskList)
 
     const handleExpandClick = () => {
         setIsDropdownExpended((prevState: boolean) => !prevState)
@@ -29,6 +32,12 @@ const ContainerList: React.FC = () => {
         setFilter(value)
     }
 
+    const handleRemoveTask = (task: iTask) => {
+        setTaskList(() => 
+            taskList.filter(currentTask => task.id !== currentTask.id)
+        )
+    }
+
     return (
         <div className="ContainerList">
             <input type="text" className="SearchList" />
@@ -38,10 +47,9 @@ const ContainerList: React.FC = () => {
                 </span>
                 <DropdownFilter currentFilter={filter} handleChangeFilter={handleChangeFilter} isExpended={isDropdownExpended} />
             </div>
-            {/* <Task discription="משימה 1" status={eFilterState.ACTIVE} />
-            <Task discription="משימה 2" status={eFilterState.ACTIVE} /> */}
             {
-                taskList.map((currentTask: iTask) => <Task {...currentTask} />)
+                taskList.map((currentTask: iTask) =>
+                    <Task key={currentTask.id} {...currentTask} onRemoveTask={handleRemoveTask} />)
             }
         </div>
     )
