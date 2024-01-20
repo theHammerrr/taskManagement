@@ -10,52 +10,53 @@ export enum eFilterState {
 }
 
 export interface iTask {
-    discription: string, 
-    status: eFilterState, 
-    // taskParant: iTask | null
-    taskParant: string | null
+    discription: string,
+    status: eFilterState,
+    taskParant?: iTask
 }
 
 const Task: React.FC<iTask> = ({
-    discription, 
-    status, 
-    taskParant = null
+    discription,
+    status
 }: iTask) => {
     const [isExpended, setExpended] = useState<boolean>(false)
+    const [isEditTask, setEditTask] = useState<boolean>(false)
 
+    const editModalTitle = "עריכת משימה"
     const handleExpandClick = () => {
         setExpended((prevState: boolean) => !prevState)
     }
 
     const openEditTaskModal = () => {
-        return(
-            <TaskModal onClose={function (): void {
-                throw new Error("Function not implemented.");
-            } } onSave={function (): void {
-                throw new Error("Function not implemented.");
-            } } showModal={true} title={""} />
-        )
+        setEditTask(true)
+    }
+
+    const closeEditTaskModal = () => {
+        setEditTask(false)
     }
 
     return (
-        <div className="task">
-            <div className="task-start">
-                <button className="expend-button" onClick={handleExpandClick} >
-                    <div className={isExpended ? "arrow-up-task" : "arrow-down-task" } />
-                </button>
-                <span>{discription}</span>
+        <>
+            <div className="task">
+                <div className="task-start">
+                    <button className="expend-button" onClick={handleExpandClick} >
+                        <div className={isExpended ? "arrow-up-task" : "arrow-down-task"} />
+                    </button>
+                    <span>{discription}</span>
+                </div>
+                <div className="task-status">{status}</div>
+                <div className="task-icons">
+                    <img src={pencilIcon} onClick={openEditTaskModal} />
+                    <img src={trashIcon} />
+                </div>
             </div>
-            <div className="task-status">{status}</div>
-            <div className="task-icons">
-                <img src={pencilIcon} onClick={openEditTaskModal}/>
-                <img src={trashIcon} />
-            </div>
-            <TaskModal onClose={function (): void {
-                throw new Error("Function not implemented.");
-            } } onSave={function (): void {
-                throw new Error("Function not implemented.");
-            } } showModal={false} title={""} />
-        </div>
+            <TaskModal
+                onClose={closeEditTaskModal}
+                onSave={closeEditTaskModal}
+                showModal={isEditTask}
+                title={editModalTitle} 
+                currentTask={{discription,status}} />
+        </>
     )
 }
 

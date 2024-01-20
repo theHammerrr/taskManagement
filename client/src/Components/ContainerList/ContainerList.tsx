@@ -27,8 +27,8 @@ const ContainerList: React.FC = () => {
                 </span>
                 <DropdownFilter currentFilter={filter} handleChangeFilter={handleChangeFilter} isExpended={isDropdownExpended} />
             </div>
-            <Task discription="משימה 1" status={eFilterState.ACTIVE} taskParant={null} />
-            <Task discription="משימה 2" status={eFilterState.ACTIVE} taskParant={null} />
+            <Task discription="משימה 1" status={eFilterState.ACTIVE} />
+            <Task discription="משימה 2" status={eFilterState.ACTIVE} />
         </div>
     )
 }

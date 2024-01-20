@@ -3,31 +3,33 @@ import Modal, { iModalProps } from "../Modal/Modal";
 import { eFilterState, iTask } from "./Task";
 import './TaskModal.css'
 
-export type tTaskModalProps = Omit<iModalProps, "contentTypesArray">
+interface TaskModalProps extends iModalProps {
+    currentTask?: iTask
+}
 
-const TaskModal: React.FC<tTaskModalProps> = ({
+const TaskModal: React.FC<TaskModalProps> = ({
     onClose,
     showModal,
     title,
-    onSave
+    onSave,
+    currentTask
 }) => {
-    const [task, setTask] = useState<iTask>({
+    const [task, setTask] = useState<iTask>(currentTask ? currentTask : {
         discription: "",
-        status: eFilterState.NOT_ACTIVE,
-        taskParant: null
+        status: eFilterState.NOT_ACTIVE
     })
 
     type taskProperties = keyof iTask;
     const handleChangeTask = (
         event: React.FormEvent<HTMLInputElement>,
         property: taskProperties) => {
-            setTask({
-                ...task, 
-                [property]: event.currentTarget.value
-            })
+        setTask({
+            ...task,
+            [property]: event.currentTarget.value
+        })
     }
 
-    
+
     return (
         <Modal
             showModal={showModal}
@@ -37,12 +39,13 @@ const TaskModal: React.FC<tTaskModalProps> = ({
         >
             <div className="input-container">
                 <span>שם:</span>
-                <input 
-                    className="input" 
-                    placeholder="שם..." 
+                <input
+                    className="input"
+                    value={task.discription}
+                    placeholder="שם..."
                     onChange={(event) => {
                         handleChangeTask(event, "discription")
-                }} />
+                    }} />
             </div>
         </Modal>
     )
