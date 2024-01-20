@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './ContainerList.css'
 import Task, { eFilterState, iTask } from "../Task/Task";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
+import { debounce } from "../helpers/debounce";
 
-let tempTaskList: iTask[] = [
+let taskList: iTask[] = [
     {
         id: 1,
         discription: "משימה 1",
@@ -11,47 +12,53 @@ let tempTaskList: iTask[] = [
     },
     {
         id: 2,
-        discription: "משימה 1",
+        discription: "משימה 2",
         status: eFilterState.COMPLETED
     }
 ]
 
 const ContainerList: React.FC = () => {
-    const [filter, setFilter] = useState(eFilterState.ACTIVE)
+    const [statusFilter, setStatusFilter] = useState(eFilterState.ACTIVE)
     const [isDropdownExpended, setIsDropdownExpended] = useState<boolean>(false)
-    const [taskList, setTaskList] = useState<iTask[]>(tempTaskList)
+    const [displayTaskList, setTaskList] = useState<iTask[]>(taskList)
 
-    const handleExpandClick = () => {
-        setIsDropdownExpended((prevState: boolean) => !prevState)
+    const searchTasks = (text: string) => {
+        setTaskList(() =>
+            taskList.filter(currentTask => currentTask.discription.includes(text))
+        )
     }
 
+    const handleTextFilterChange = debounce((value: string) => {
+        searchTasks(value)
+    }, 300)
+
     const handleChangeFilter = (value: eFilterState) => {
-        if (value === filter) return;
+        if (value === statusFilter) return;
 
         setIsDropdownExpended(false)
-        setFilter(value)
+        setStatusFilter(value)
     }
 
     const handleRemoveTask = (task: iTask) => {
         setTaskList(() =>
-            taskList.filter(currentTask => task.id !== currentTask.id)
+            displayTaskList.filter(currentTask => task.id !== currentTask.id)
         )
     }
 
     return (
         <div className="ContainerList">
-            <input type="text" className="SearchList" />
+            <input type="text" className="SearchList" onChange={e => handleTextFilterChange(e.target.value)} />
             <div className="filter-container">
                 <span >
                     סינון לפי:
                 </span>
                 <DropdownFilter
-                    currentFilter={filter}
+                    currentFilter={statusFilter}
                     handleChangeFilter={handleChangeFilter}
                     isExpended={isDropdownExpended} />
             </div>
             {
-                taskList.map((currentTask: iTask) =>
+                displayTaskList.map((currentTask: iTask) =>
                     <Task key={currentTask.id} {...currentTask} onRemoveTask={handleRemoveTask} />)
             }
         </div>
