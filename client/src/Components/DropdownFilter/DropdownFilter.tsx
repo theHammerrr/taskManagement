@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { eFilterState } from "../Task/Task";
 import './DropdownFilter.css'
 
+export enum eExtraDropdownItems {
+    ALL = "הכל"
+}
+
 interface iDropdownFilterProps {
-    currentFilter: eFilterState,
-    handleChangeFilter: (status: eFilterState) => void,
+    currentFilter: eFilterState | eExtraDropdownItems,
+    handleChangeFilter: (status: eFilterState | eExtraDropdownItems) => void,
     isExpended: boolean
 }
 
@@ -18,7 +22,7 @@ const DropdownFilter: React.FC<iDropdownFilterProps> = ({
         setIsDropdownExpended((prevState: boolean) => !prevState)
     }
 
-    const handleClickFilter = (value: eFilterState) => {
+    const handleClickFilter = (value: eFilterState | eExtraDropdownItems) => {
         handleChangeFilter(value)
         if (value === currentFilter) return;
 
@@ -37,7 +41,7 @@ const DropdownFilter: React.FC<iDropdownFilterProps> = ({
                         "dropdown-content-show" :
                         "dropdown-content-hide") +
                     " dropdown-content"}>
-                    {Object.values(eFilterState).map((status) =>
+                    {[...Object.values(eExtraDropdownItems), ...Object.values(eFilterState)].map((status) =>
                         <button
                             key={status}
                             className={(status === currentFilter ? "chosen-status" : "") + " dropdown-item"}
