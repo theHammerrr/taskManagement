@@ -3,17 +3,15 @@ import './Task.css'
 import pencilIcon from './pencil.svg'
 import trashIcon from './trash.svg'
 import TaskModal from "./TaskModal";
+import { eFilterState } from "../../CommonInterfaces/FilterState";
 
-export enum eFilterState {
-    ACTIVE = 'פעיל',
-    COMPLETED = 'הושלם'
-}
+
 
 export interface iTask {
     id: number,
     discription: string,
     status: eFilterState,
-    taskParant?: iTask, 
+    taskParant?: iTask,
 }
 
 interface iTaskProps extends iTask {
@@ -32,7 +30,7 @@ const Task: React.FC<iTaskProps> = ({
     const editModalTitle = "עריכת משימה"
     const currentTask: iTask = {
         id,
-        discription, 
+        discription,
         status
     }
 
@@ -60,15 +58,18 @@ const Task: React.FC<iTaskProps> = ({
                 <div className="task-status">{status}</div>
                 <div className="task-icons">
                     <img src={pencilIcon} onClick={openEditTaskModal} />
-                    <img src={trashIcon} onClick={() => onRemoveTask(currentTask)}/>
+                    <img src={trashIcon} onClick={() => onRemoveTask(currentTask)} />
                 </div>
             </div>
-            <TaskModal
-                onClose={closeEditTaskModal}
-                onSave={closeEditTaskModal}
-                showModal={isEditTask}
-                title={editModalTitle} 
-                currentTask={currentTask} />
+            {
+                isEditTask &&
+                <TaskModal
+                    onClose={closeEditTaskModal}
+                    onSave={closeEditTaskModal}
+                    showModal={isEditTask}
+                    title={editModalTitle}
+                    currentTask={currentTask} />
+            }
         </>
     )
 }

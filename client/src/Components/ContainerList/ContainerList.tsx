@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react";
 import './ContainerList.css'
-import Task, { eFilterState, iTask } from "../Task/Task";
-import DropdownFilter, { eExtraDropdownItems } from "../DropdownFilter/DropdownFilter";
+import Task, { iTask } from "../Task/Task";
+import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import { debounce } from "../../helpers/debounce";
+import { getAllTasks } from "../../axios/tempData";
+import { eFilterState } from "../../CommonInterfaces/FilterState";
 
-let taskList: iTask[] = [
-    {
-        id: 1,
-        discription: "משימה 1",
-        status: eFilterState.ACTIVE
-    },
-    {
-        id: 2,
-        discription: "משימה 2",
-        status: eFilterState.COMPLETED
-    }
-]
+
+export enum eExtraDropdownItems {
+    ALL = "הכל"
+}
 
 const ContainerList: React.FC = () => {
+    // TODO: change later
+    const taskList = getAllTasks()
     const [statusFilter, setStatusFilter] = useState<eFilterState | eExtraDropdownItems>(eExtraDropdownItems.ALL)
     const [isDropdownExpended, setIsDropdownExpended] = useState<boolean>(false)
-    const [displayTaskList, setDisplayTaskList] = useState<iTask[]>(taskList)
+    const [displayTaskList, setDisplayTaskList] = useState<iTask[]>([])
+
+    useEffect(() => {
+        setDisplayTaskList(getAllTasks())
+    }, [])
 
     const searchTasks = (text: string) => {
         setDisplayTaskList(() =>
@@ -32,18 +32,22 @@ const ContainerList: React.FC = () => {
         searchTasks(value)
     }, 300)
 
-    const handleChangeFilter = (value: eFilterState | eExtraDropdownItems) => {
-        if (value === statusFilter) return;
+    const handleChangeFilter = (value: string ) => {
+        if (value === statusFilter) {
+            console.log(value);
+            
+            setIsDropdownExpended(false)
+            return;
+        }
 
         setIsDropdownExpended(false)
-        setStatusFilter(value)
+        setStatusFilter(value as eFilterState | eExtraDropdownItems)
         
         if (value === eExtraDropdownItems.ALL) {
             setDisplayTaskList(taskList)
         } else {
             setDisplayTaskList(() => taskList.filter((task: iTask) => task.status === value))
         }
-
     }
 
     const handleRemoveTask = (task: iTask) => {
@@ -51,6 +55,13 @@ const ContainerList: React.FC = () => {
             displayTaskList.filter(currentTask => task.id !== currentTask.id)
         )
     }
+
+    // useEffect(() => {
+    //     console.log('is expended');
+        
+    //     console.log(isDropdownExpended);
+        
+    // }, [isDropdownExpended])
 
     return (
         <div className="ContainerList">
@@ -61,8 +72,10 @@ const ContainerList: React.FC = () => {
                 </span>
                 <DropdownFilter
                     currentFilter={statusFilter}
-                    handleChangeFilter={handleChangeFilter}
-                    isExpended={isDropdownExpended} />
+                    handleClickItem={handleChangeFilter}
+                    clickDropdownCallback={(prevState) => setIsDropdownExpended(!prevState)}
+                    isExpended={isDropdownExpended}
+                    possibleStates={[...Object.values(eExtraDropdownItems), ...Object.values(eFilterState)]} />
             </div>
             {
                 displayTaskList.map((currentTask: iTask) =>

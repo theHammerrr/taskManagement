@@ -16,7 +16,7 @@
     padding: 20px;
     --modal-height: 70vh;
     height: var(--modal-height);
-    width: 30%;
+    width: 25%;
     border-radius: 2%;
     position: relative;
 }
@@ -28,15 +28,16 @@
 }
 
 .modal-bottom-buttons {
+    display: flex;
+    flex-direction: row;
     position: absolute;
+    gap: 10px;
     right: 65%;
     bottom: 5%;
 }
 
 .modal-bottom-buttons button {
-    margin-left: 10px;
-    padding: 8px 25px;
-    height: 30px;
+    padding: 13% 30%;
     cursor: pointer;
     border: none;
     color: white;

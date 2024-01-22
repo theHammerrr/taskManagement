@@ -1,11 +1,30 @@
+.modal-children {
+    font-size: 20px;
+    --gap-size: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
 .input-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    font-size: 20px;
+    gap: var(--gap-size);
     margin-top: 2%;
 }
 
 .input {
     width: 60%;
+}
+
+.dropdown-status {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-size);
+}
+
+.dropdown-assing-parent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-size);
 }

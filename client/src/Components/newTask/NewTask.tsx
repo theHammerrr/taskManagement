@@ -20,11 +20,14 @@ const NewTask: React.FC = () => {
             <button className="modal-button" onClick={handleOpenModal}>
                 <img src={newTaskIcon} />
             </button>
-            <TaskModal
-                showModal={showModal}
-                onClose={handleCloseModal}
-                title={modalTitle} 
-                onSave={handleCloseModal} />
+            {
+                showModal &&
+                <TaskModal
+                    showModal={showModal}
+                    onClose={handleCloseModal}
+                    title={modalTitle}
+                    onSave={handleCloseModal} />
+            }
         </>
     )
 }

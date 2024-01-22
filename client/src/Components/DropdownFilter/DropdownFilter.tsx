@@ -1,51 +1,50 @@
-import React, { useState } from "react";
-import { eFilterState } from "../Task/Task";
+import React, { useEffect, useState } from "react";
 import './DropdownFilter.css'
 
-export enum eExtraDropdownItems {
-    ALL = "הכל"
-}
-
 interface iDropdownFilterProps {
-    currentFilter: eFilterState | eExtraDropdownItems,
-    handleChangeFilter: (status: eFilterState | eExtraDropdownItems) => void,
-    isExpended: boolean
+    currentFilter: string,
+    handleClickItem: (state: string) => void,
+    isExpended: boolean, 
+    possibleStates: string[],
+    clickDropdownCallback?: (prevState: boolean) => void
 }
 
 const DropdownFilter: React.FC<iDropdownFilterProps> = ({
     currentFilter,
-    handleChangeFilter
-}: iDropdownFilterProps) => {
-    const [isDropdownExpended, setIsDropdownExpended] = useState<boolean>(false)
-
+    handleClickItem,
+    possibleStates,
+    isExpended,
+    clickDropdownCallback
+}: iDropdownFilterProps )=> {
+    const [currentState, setCurrentState] = useState<boolean>(isExpended)
+    
     const handleExpandClick = () => {
-        setIsDropdownExpended((prevState: boolean) => !prevState)
+        setCurrentState((prevState) => !prevState)
+
+        if (clickDropdownCallback) clickDropdownCallback(isExpended)
     }
 
-    const handleClickFilter = (value: eFilterState | eExtraDropdownItems) => {
-        handleChangeFilter(value)
-        if (value === currentFilter) return;
-
-        setIsDropdownExpended(false)
-    }
+    useEffect(() => {
+        setCurrentState(isExpended)
+    }, [isExpended])
 
     return (
         <div className="filter">
             <div className="filter-dropdown">
                 <button className="dropdown-button" onClick={handleExpandClick}>
                     <span className="filter-state">{currentFilter}</span>
-                    <div className={(isDropdownExpended ? "arrow-up" : "arrow-down") + " arrow-filter"} />
+                    <div className={(currentState ? "arrow-up" : "arrow-down") + " arrow-filter"} />
                 </button>
                 <div className={
-                    (isDropdownExpended ?
+                    (currentState ?
                         "dropdown-content-show" :
                         "dropdown-content-hide") +
                     " dropdown-content"}>
-                    {[...Object.values(eExtraDropdownItems), ...Object.values(eFilterState)].map((status) =>
+                    {possibleStates.map((status) =>
                         <button
                             key={status}
                             className={(status === currentFilter ? "chosen-status" : "") + " dropdown-item"}
-                            onClick={() => handleClickFilter(status)}>
+                            onClick={() => handleClickItem(status)}>
                             <span >{status}</span>
                         </button>
                     )}
