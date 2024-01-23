@@ -12,7 +12,8 @@
 }
 
 .modal-content {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     background-color: #f2f2f2;
     padding: 20px;
     height: 70%;
@@ -22,7 +23,7 @@
 }
 
 .title {
-    font-size: 100%;
+    font-size: 6vh;
     font-weight: bold;
     /* TODO: change font Aduma*/
 }
@@ -30,19 +31,13 @@
 .modal-bottom-buttons {
     display: flex;
     flex-direction: row;
-    /* position: absolute; */
     gap : 10px;
-    /* align-items: flex-end; */
-    height: 30%;
+    margin-top: auto;
     justify-content: flex-end;
 }
 
 .modal-bottom-buttons button {
-    /* padding: 7% 7%; */
-    min-width: 70px;
-    min-height: 30px;
-    /* width: 20%; */
-    /* height: 20%; */
+    padding: 2% 5%;
     cursor: pointer;
     border: none;
     color: white;
