@@ -27,7 +27,7 @@ const Task: React.FC<iTaskProps> = ({
     const [isExpended, setExpended] = useState<boolean>(false)
     const [isEditTask, setEditTask] = useState<boolean>(false)
 
-    const editModalTitle = "עריכת משימה"
+    const editModalTitle = `עריכת ${discription}`
     const currentTask: iTask = {
         id,
         discription,
