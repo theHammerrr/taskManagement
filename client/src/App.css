@@ -17,18 +17,18 @@ body {
   bottom: 5%;
 }
 
-.arrow-down {
+/* .arrow-down {
   height: 0;
   width: 0;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
   border-top: 14px solid;
-}
+} */
 
-.arrow-up {
+/* .arrow-up {
   height: 0;
   width: 0;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
   border-bottom: 14px solid;
-}
+} */

@@ -17,11 +17,12 @@
     padding: 20px;
     height: 70%;
     width: 25%;
+    /* min-width: 300px; */
     border-radius: 2%;
 }
 
 .title {
-    font-size: 45px;
+    font-size: 100%;
     font-weight: bold;
     /* TODO: change font Aduma*/
 }

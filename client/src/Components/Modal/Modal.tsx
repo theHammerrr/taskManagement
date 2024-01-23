@@ -23,7 +23,7 @@ const Modal: React.FC<iModalProps> = ({
                 showModal &&
                 <div className={"modal-overlay"}>
                     <div className="modal-content">
-                        <div className="title">{title}</div>
+                        <span className="title">{title}</span>
                         {children}
                         <div className="modal-bottom-buttons">
                             <button className="modal-close" onClick={onClose}>ביטול</button>

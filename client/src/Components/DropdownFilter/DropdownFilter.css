@@ -8,29 +8,26 @@
     height: 100%;
 }
 .dropdown-button {
-    display: grid;
+    display: flex;
     border: none;
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    /* justify-content: space-around; */
-    width: 80px;
+    min-width: 80px;
     height: 100%;
     background-color: #ffffff;
 }
 
 .chosen-status {
-    /* background-color: aqua; */
     filter: brightness(50%);
 }
 
 .filter-state {
-    position: fixed;
     justify-self: flex-start;
 }
 
 .arrow-filter {
     color: #333;
-    position: fixed;
     justify-self: flex-end;
 }
 
@@ -64,4 +61,20 @@
 
 .dropdown-item:hover {
     background-color: #f1f1f1
+}
+
+.arrow-down {
+  height: 0;
+  width: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 14px solid;
+}
+
+.arrow-up {
+  height: 0;
+  width: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 14px solid;
 }
