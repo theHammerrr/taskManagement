@@ -1,15 +1,14 @@
 .modal-children {
     font-size: 3vh;
-    --gap-size: 2vh;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 4vh;
 }
 
 .input-container {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-size);
+    gap: 1vh;
     margin-top: 2%;
     height: 80%;
 }
@@ -21,11 +20,9 @@
 .dropdown-status {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-size);
 }
 
 .dropdown-assing-parent {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-size);
 }

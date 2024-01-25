@@ -15,7 +15,6 @@ const ContainerList: React.FC = () => {
     // TODO: change later
     const taskList = getAllTasks()
     const [statusFilter, setStatusFilter] = useState<eFilterState | eExtraDropdownItems>(eExtraDropdownItems.ALL)
-    const [isDropdownExpended, setIsDropdownExpended] = useState<boolean>(false)
     const [displayTaskList, setDisplayTaskList] = useState<iTask[]>([])
 
     useEffect(() => {
@@ -33,17 +32,10 @@ const ContainerList: React.FC = () => {
     }, 300)
 
     const handleChangeFilter = (value: string ) => {
-        if (value === statusFilter) {
-            console.log(value);
-            
-            setIsDropdownExpended(false)
-            return;
-        }
+        if (value === statusFilter) return
 
-        setIsDropdownExpended(false)
         setStatusFilter(value as eFilterState | eExtraDropdownItems)
-        console.log(value);
-        
+
         if (value === eExtraDropdownItems.ALL) {
             setDisplayTaskList(taskList)
         } else {
@@ -57,13 +49,6 @@ const ContainerList: React.FC = () => {
         )
     }
 
-    // useEffect(() => {
-    //     console.log('is expended');
-        
-    //     console.log(isDropdownExpended);
-        
-    // }, [isDropdownExpended])
-
     return (
         <div className="ContainerList">
             <input type="text" className="SearchList" onChange={e => handleTextFilterChange(e.target.value)} />
@@ -74,8 +59,6 @@ const ContainerList: React.FC = () => {
                 <DropdownFilter
                     currentFilter={statusFilter}
                     handleClickItem={handleChangeFilter}
-                    clickDropdownCallback={(prevState) => setIsDropdownExpended(!prevState)}
-                    isExpended={isDropdownExpended}
                     possibleStates={[...Object.values(eExtraDropdownItems), ...Object.values(eFilterState)]} />
             </div>
             {

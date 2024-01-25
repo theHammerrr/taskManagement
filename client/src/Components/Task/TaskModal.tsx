@@ -84,7 +84,6 @@ const TaskModal: React.FC<TaskModalProps> = ({
                         currentFilter={task.status}
                         handleClickItem={(status) => 
                             handleChangeTask<eFilterState>(status as eFilterState, "status")}
-                        isExpended={false}
                         possibleStates={Object.values(eFilterState)} />
                 </div>
                 <div className="dropdown-assing-parent">
@@ -92,7 +91,6 @@ const TaskModal: React.FC<TaskModalProps> = ({
                     <DropdownFilter
                         currentFilter={task.taskParant ? task.taskParant.discription : ""}
                         handleClickItem={(parentDiscription) => handleAssingParent(parentDiscription)}
-                        isExpended={false}
                         possibleStates={possibleParents} />
                 </div>
             </div>
