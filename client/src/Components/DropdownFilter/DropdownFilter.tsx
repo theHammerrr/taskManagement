@@ -1,36 +1,37 @@
 import React, { useEffect, useState } from "react";
-import './DropdownFilter.css'
+import "./DropdownFilter.css";
 
 interface iDropdownFilterProps {
-    currentFilter: string,
-    handleClickItem: (state: string) => void,
-    isExpended: boolean, 
-    possibleStates: string[],
-    clickDropdownCallback?: (prevState: boolean) => void
+  currentFilter: string;
+  handleClickItem: (state: string) => void;
+  isExpended: boolean;
+  possibleStates: string[];
+  clickDropdownCallback?: (prevState: boolean) => void;
 }
 
 const DropdownFilter: React.FC<iDropdownFilterProps> = ({
-    currentFilter,
-    handleClickItem,
-    possibleStates,
-    isExpended,
-    clickDropdownCallback
-}: iDropdownFilterProps )=> {
-    const [currentState, setCurrentState] = useState<boolean>(isExpended)
-    
-    const handleExpandClick = () => {
-        setCurrentState((prevState) => !prevState)
+  currentFilter,
+  handleClickItem,
+  possibleStates,
+  isExpended,
+  clickDropdownCallback,
+}: iDropdownFilterProps) => {
+  const [currentState, setCurrentState] = useState<boolean>(isExpended);
+  const [chosenValue, setChosenValue] = useState<string>("");
 
-        if (clickDropdownCallback) clickDropdownCallback(isExpended)
-    }
+  const handleExpandClick = () => {
+    setCurrentState((prevState) => !prevState);
 
-    useEffect(() => {
-        setCurrentState(isExpended)
-    }, [isExpended])
+    if (clickDropdownCallback) clickDropdownCallback(isExpended);
+  };
 
-    return (
-        <div className="filter">
-            <div className="filter-dropdown">
+  useEffect(() => {
+    setCurrentState(isExpended);
+  }, [isExpended]);
+
+  return (
+    <div className="filter">
+      {/* <div className="filter-dropdown">
                 <button className="dropdown-button" onClick={handleExpandClick}>
                     <span className="filter-state">{currentFilter}</span>
                     <div className={(currentState ? "arrow-up" : "arrow-down") + " arrow-filter"} />
@@ -49,9 +50,31 @@ const DropdownFilter: React.FC<iDropdownFilterProps> = ({
                         </button>
                     )}
                 </div>
-            </div>
-        </div>
-    )
-}
+            </div> */}
+      {/* <label for="cars">Choose a car:</label> */}
 
-export default DropdownFilter
+      <select
+        name="cars"
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+          handleClickItem(event.target.value)
+        }
+        // value={chosenValue}
+      >
+        {possibleStates.map((value) => (
+          <option
+            key={value}
+            value={value}
+            // className={
+            //   (status === currentFilter ? "chosen-status" : "") +
+            //   " dropdown-item"
+            // }
+          >
+            {value}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
+export default DropdownFilter;

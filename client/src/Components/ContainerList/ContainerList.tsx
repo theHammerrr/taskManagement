@@ -42,6 +42,7 @@ const ContainerList: React.FC = () => {
 
         setIsDropdownExpended(false)
         setStatusFilter(value as eFilterState | eExtraDropdownItems)
+        console.log(value);
         
         if (value === eExtraDropdownItems.ALL) {
             setDisplayTaskList(taskList)
