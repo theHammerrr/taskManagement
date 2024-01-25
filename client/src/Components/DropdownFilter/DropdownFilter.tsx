@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "./DropdownFilter.css";
 
 interface iDropdownFilterProps {
   currentFilter: string;
