@@ -3,16 +3,9 @@ import './Task.css'
 import pencilIcon from './pencil.svg'
 import trashIcon from './trash.svg'
 import TaskModal from "./TaskModal";
-import { eFilterState } from "../../CommonInterfaces/FilterState";
+import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
+import { iTask } from "../../CommonInterfaces/Task";
 
-
-
-export interface iTask {
-    id: number,
-    discription: string,
-    status: eFilterState,
-    taskParant?: iTask,
-}
 
 interface iTaskProps extends iTask {
     onRemoveTask: (task: iTask) => void
@@ -20,7 +13,7 @@ interface iTaskProps extends iTask {
 
 const Task: React.FC<iTaskProps> = ({
     id,
-    discription,
+    description: discription,
     status,
     onRemoveTask
 }: iTaskProps) => {
@@ -30,7 +23,7 @@ const Task: React.FC<iTaskProps> = ({
     const editModalTitle = `עריכת ${discription}`
     const currentTask: iTask = {
         id,
-        discription,
+        description: discription,
         status
     }
 
@@ -44,6 +37,10 @@ const Task: React.FC<iTaskProps> = ({
 
     const closeEditTaskModal = () => {
         setEditTask(false)
+    }
+
+    const handleSaveEditModal = (task: iTask) => {
+
     }
 
     return (
@@ -65,10 +62,10 @@ const Task: React.FC<iTaskProps> = ({
                 isEditTask &&
                 <TaskModal
                     onClose={closeEditTaskModal}
-                    onSave={closeEditTaskModal}
+                    onSave={handleSaveEditModal}
                     showModal={isEditTask}
                     title={editModalTitle}
-                    currentTask={currentTask} />
+                    givenTask={currentTask} />
             }
         </>
     )

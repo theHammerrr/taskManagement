@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
 import './ContainerList.css'
-import Task, { iTask } from "../Task/Task";
+import Task from "../Task/Task";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import { debounce } from "../../helpers/debounce";
 import { getAllTasks } from "../../axios/tempData";
-import { eFilterState } from "../../CommonInterfaces/FilterState";
-
-
-export enum eExtraDropdownItems {
-    ALL = "הכל"
-}
+import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
+import { iTask } from "../../CommonInterfaces/Task";
 
 const ContainerList: React.FC = () => {
     // TODO: change later
     const taskList = getAllTasks()
-    const [statusFilter, setStatusFilter] = useState<eFilterState | eExtraDropdownItems>(eExtraDropdownItems.ALL)
+    const statusFilterAll = "הכל"
+    const [statusFilter, setStatusFilter] = useState<eTaskStatus | string>(statusFilterAll)
     const [displayTaskList, setDisplayTaskList] = useState<iTask[]>([])
+
+    const possibleStates = [statusFilterAll, ...Object.values(eTaskStatus)]
 
     useEffect(() => {
         setDisplayTaskList(getAllTasks())
@@ -23,7 +22,7 @@ const ContainerList: React.FC = () => {
 
     const searchTasks = (text: string) => {
         setDisplayTaskList(() =>
-            taskList.filter(currentTask => currentTask.discription.includes(text))
+            taskList.filter(currentTask => currentTask.description.includes(text))
         )
     }
 
@@ -34,9 +33,9 @@ const ContainerList: React.FC = () => {
     const handleChangeFilter = (value: string ) => {
         if (value === statusFilter) return
 
-        setStatusFilter(value as eFilterState | eExtraDropdownItems)
+        setStatusFilter(value as eTaskStatus | string)
 
-        if (value === eExtraDropdownItems.ALL) {
+        if (value === statusFilterAll) {
             setDisplayTaskList(taskList)
         } else {
             setDisplayTaskList(() => taskList.filter((task: iTask) => task.status === value))
@@ -51,6 +50,7 @@ const ContainerList: React.FC = () => {
 
     return (
         <div className="ContainerList">
+            {/* TODO: change to it won't render the function everytime */}
             <input type="text" className="SearchList" onChange={e => handleTextFilterChange(e.target.value)} />
             <div className="filter-container">
                 <span >
@@ -59,7 +59,7 @@ const ContainerList: React.FC = () => {
                 <DropdownFilter
                     currentFilter={statusFilter}
                     handleClickItem={handleChangeFilter}
-                    possibleStates={[...Object.values(eExtraDropdownItems), ...Object.values(eFilterState)]} />
+                    possibleStates={possibleStates} />
             </div>
             {
                 displayTaskList.map((currentTask: iTask) =>

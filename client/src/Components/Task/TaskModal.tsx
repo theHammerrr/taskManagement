@@ -1,13 +1,29 @@
 import React, { useEffect, useState } from "react";
 import Modal, { iModalProps } from "../Modal/Modal";
-import { iTask } from "./Task";
+import { iTask } from "../../CommonInterfaces/Task";
 import './TaskModal.css'
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import { getAllTasks } from "../../axios/tempData";
-import { eFilterState } from "../../CommonInterfaces/FilterState";
+import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 
 interface TaskModalProps extends iModalProps {
-    currentTask?: iTask,
+    givenTask?: iTask,
+    onSave: (choesenData: iTask) => void,
+    onClose: () => void
+}
+
+const findTaskWithId = (allTasks: iTask[], taskId: number | undefined): iTask | undefined => {
+    return allTasks.find((task: iTask) => task.id === taskId);
+}
+
+const findTaskWithDescription = (allTasks: iTask[], description: string | undefined) => {
+    return allTasks.find((task: iTask) => task.description === description)
+}
+
+const demoTask = {
+    id: -1,
+    description: "",
+    status: eTaskStatus.ACTIVE
 }
 
 const TaskModal: React.FC<TaskModalProps> = ({
@@ -15,83 +31,96 @@ const TaskModal: React.FC<TaskModalProps> = ({
     showModal,
     title,
     onSave,
-    currentTask,
+    givenTask,
 }) => {
-    const [task, setTask] = useState<iTask>(currentTask ? currentTask : {
-        id: -1,
-        discription: "",
-        status: eFilterState.ACTIVE
-    })
+    const allTasks: iTask[] = getAllTasks();
 
-    let allTasks: iTask[] = getAllTasks();
-    const possibleParents =
-        allTasks.map(task => task.discription)
-            .filter(discription => discription !== task.discription)
+    const [currentTask, setTask] = useState<iTask>(givenTask ? givenTask : demoTask)
+    const [currentParent, setCurrentParent] = useState<iTask | undefined>(
+        findTaskWithId(allTasks, currentTask.parentId)
+    )
+    
+    const unlinkTaskText: string = "בטל קישור למטרה"
+
+    const possibleParents: string[] =
+    allTasks.map(task => task.description)
+    .filter(description => description !== currentTask.description)
+    
+    possibleParents.unshift(unlinkTaskText)
 
     type taskProperties = keyof iTask;
     const handleChangeTask = <T,>(
         value: T,
         property: taskProperties) => {
         setTask({
-            ...task,
+            ...currentTask,
             [property]: value
         })
     }
 
-    const handleAssingParent = (parentDiscription: string) => {
-        if (task.taskParant && task.taskParant.discription === parentDiscription) {
-            console.log(123);
-
-            const { taskParant: _, ...orphanTask }: iTask = task
+    const handleLinkTaskToParent = (parentDiscription: string) => {
+        if (parentDiscription === unlinkTaskText) {
+            const { parentId: _, ...orphanTask }: iTask = currentTask
             setTask({
                 ...orphanTask
             })
-        } else {
-            const parent: iTask | undefined = allTasks.find(task => task.discription == parentDiscription)
-
-            if (parent) {
-                handleChangeTask<iTask>(parent, "taskParant")
-            }
+            return
         }
 
+        const currentParent = findTaskWithId(allTasks, currentTask.parentId)
+
+        if (!currentParent || currentParent.description !== parentDiscription) {
+            const newParent = findTaskWithDescription(allTasks, parentDiscription)
+            if (newParent) handleChangeTask<number>(newParent?.id, "parentId")
+        }
+    }
+
+    const handleOnSubmit = () => {
+        onSave(currentTask)
     }
 
     useEffect(() => {
-        console.log(task);
-    }, [task])
+        if (currentTask.parentId) {
+            setCurrentParent(findTaskWithId(allTasks, currentTask.parentId))
+        } else {
+            setCurrentParent(undefined)
+        }
+    }, [currentTask.parentId])
 
     return (
         <Modal
             showModal={showModal}
-            onClose={onClose}
             title={title}
-            onSave={onSave}
         >
             <div className="modal-children">
                 <div className="input-container">
                     <span>שם:</span>
                     <input
                         className="input"
-                        value={task.discription}
+                        value={currentTask.description}
                         placeholder="שם..."
                         onChange={(event) => {
-                            handleChangeTask<string>(event.currentTarget.value, "discription")
+                            handleChangeTask<string>(event.currentTarget.value, "description")
                         }} />
                 </div>
                 <div className="dropdown-status">
                     <span>סטטוס:</span>
                     <DropdownFilter
-                        currentFilter={task.status}
-                        handleClickItem={(status) => 
-                            handleChangeTask<eFilterState>(status as eFilterState, "status")}
-                        possibleStates={Object.values(eFilterState)} />
+                        currentFilter={currentTask.status}
+                        handleClickItem={(status) =>
+                            handleChangeTask<eTaskStatus>(status as eTaskStatus, "status")}
+                        possibleStates={Object.values(eTaskStatus)} />
                 </div>
-                <div className="dropdown-assing-parent">
+                <div className="dropdown-lint-task">
                     <span>קישור למשימה:</span>
                     <DropdownFilter
-                        currentFilter={task.taskParant ? task.taskParant.discription : ""}
-                        handleClickItem={(parentDiscription) => handleAssingParent(parentDiscription)}
+                        currentFilter={currentParent ? currentParent.description : unlinkTaskText}
+                        handleClickItem={(parentDiscription) => handleLinkTaskToParent(parentDiscription)}
                         possibleStates={possibleParents} />
+                </div>
+                <div className="modal-bottom-buttons">
+                    <button className="modal-close" onClick={onClose}>ביטול</button>
+                    <button className="modal-save" onClick={handleOnSubmit}>שמירה</button>
                 </div>
             </div>
         </Modal>

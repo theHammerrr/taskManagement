@@ -1,20 +1,18 @@
-import { eFilterState } from "../CommonInterfaces/FilterState";
-import { iTask } from "../Components/Task/Task";
-
+import { eTaskStatus } from "../CommonInterfaces/TaskStatus";
+import { iTask } from "../CommonInterfaces/Task";
 const taskList: iTask[] = [
     {
         id: 1,
-        discription: "משימה 1",
-        status: eFilterState.ACTIVE
+        description: "משימה 1",
+        status: eTaskStatus.ACTIVE
     },
     {
         id: 2,
-        discription: "משימה 2",
-        status: eFilterState.COMPLETED
+        description: "משימה 2",
+        status: eTaskStatus.COMPLETED
     }
 ]
 
-// export const getAllTasks = (): iTask[] => taskList
 export const getAllTasks = (): iTask[] => {
     return taskList
 }

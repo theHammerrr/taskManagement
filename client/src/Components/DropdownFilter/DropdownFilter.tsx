@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+// TODO: Add first option for first state when nothing is selected yet.
+
 interface iDropdownFilterProps {
-  currentFilter: string;
-  handleClickItem: (state: string) => void;
-  possibleStates: string[];
+  currentFilter: string | undefined,
+  handleClickItem: (state: string) => void,
+  possibleStates: string[]
 }
 
 const DropdownFilter: React.FC<iDropdownFilterProps> = ({
@@ -19,6 +21,15 @@ const DropdownFilter: React.FC<iDropdownFilterProps> = ({
         }
         value={currentFilter}
       >
+        {/* {(placeholder && !currentFilter) && <option
+          key={placeholder}
+          value={placeholder}
+          disabled
+          selected
+          hidden
+        >
+          {placeholder}
+        </option>} */}
         {possibleStates.map((value) => (
           <option
             key={value}
