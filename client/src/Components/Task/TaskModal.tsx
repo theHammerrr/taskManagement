@@ -3,21 +3,13 @@ import Modal, { iModalProps } from "../Modal/Modal";
 import { iTask } from "../../CommonInterfaces/Task";
 import './TaskModal.css'
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
-import { getAllTasks } from "../../axios/tempData";
+import { getAllTasks, findTaskWithDescription, findTaskWithId } from "../../axios/tempData";
 import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 
 interface TaskModalProps extends iModalProps {
     givenTask?: iTask,
     onSave: (choesenData: iTask) => void,
     onClose: () => void
-}
-
-const findTaskWithId = (allTasks: iTask[], taskId: number | undefined): iTask | undefined => {
-    return allTasks.find((task: iTask) => task.id === taskId);
-}
-
-const findTaskWithDescription = (allTasks: iTask[], description: string | undefined) => {
-    return allTasks.find((task: iTask) => task.description === description)
 }
 
 const demoTask = {
@@ -37,7 +29,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
     const [currentTask, setTask] = useState<iTask>(givenTask ? givenTask : demoTask)
     const [currentParent, setCurrentParent] = useState<iTask | undefined>(
-        findTaskWithId(allTasks, currentTask.parentId)
+        findTaskWithId(currentTask.parentId)
     )
     
     const unlinkTaskText: string = "בטל קישור למטרה"
@@ -67,10 +59,10 @@ const TaskModal: React.FC<TaskModalProps> = ({
             return
         }
 
-        const currentParent = findTaskWithId(allTasks, currentTask.parentId)
+        const currentParent = findTaskWithId(currentTask.parentId)
 
         if (!currentParent || currentParent.description !== parentDiscription) {
-            const newParent = findTaskWithDescription(allTasks, parentDiscription)
+            const newParent = findTaskWithDescription(parentDiscription)
             if (newParent) handleChangeTask<number>(newParent?.id, "parentId")
         }
     }
@@ -81,7 +73,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
     useEffect(() => {
         if (currentTask.parentId) {
-            setCurrentParent(findTaskWithId(allTasks, currentTask.parentId))
+            setCurrentParent(findTaskWithId(currentTask.parentId))
         } else {
             setCurrentParent(undefined)
         }

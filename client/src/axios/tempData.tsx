@@ -16,3 +16,11 @@ const taskList: iTask[] = [
 export const getAllTasks = (): iTask[] => {
     return taskList
 }
+
+export const findTaskWithId = (taskId: number | undefined): iTask | undefined => {
+    return taskList.find((task: iTask) => task.id === taskId);
+}
+
+export const findTaskWithDescription = (description: string | undefined) => {
+    return taskList.find((task: iTask) => task.description === description)
+}
