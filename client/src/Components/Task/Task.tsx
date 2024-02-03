@@ -3,7 +3,6 @@ import './Task.css'
 import pencilIcon from './pencil.svg'
 import trashIcon from './trash.svg'
 import TaskModal from "./TaskModal";
-import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 import { iTask } from "../../CommonInterfaces/Task";
 
 
@@ -19,6 +18,7 @@ const Task: React.FC<iTaskProps> = ({
 }: iTaskProps) => {
     const [isExpended, setExpended] = useState<boolean>(false)
     const [isEditTask, setEditTask] = useState<boolean>(false)
+    const [isHover, setIsHover] = useState<boolean>(false)
 
     const editModalTitle = `עריכת ${discription}`
     const currentTask: iTask = {
@@ -45,7 +45,9 @@ const Task: React.FC<iTaskProps> = ({
 
     return (
         <>
-            <div className="task">
+            <div className="task"
+                onMouseEnter={() => setIsHover(true)}
+                onMouseLeave={() => setIsHover(false)}>
                 <div className="task-start">
                     <button className="expend-button" onClick={handleExpandClick} >
                         <div className={isExpended ? "arrow-up-task" : "arrow-down-task"} />
@@ -53,10 +55,12 @@ const Task: React.FC<iTaskProps> = ({
                     <span>{discription}</span>
                 </div>
                 <div className="task-status">{status}</div>
-                <div className="task-icons">
-                    <img src={pencilIcon} onClick={openEditTaskModal} />
-                    <img src={trashIcon} onClick={() => onRemoveTask(currentTask)} />
-                </div>
+                {isHover &&
+                    <div className="task-icons">
+                        <img src={pencilIcon} onClick={openEditTaskModal} />
+                        <img src={trashIcon} onClick={() => onRemoveTask(currentTask)} />
+                    </div>
+                }
             </div>
             {
                 isEditTask &&
