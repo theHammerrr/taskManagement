@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import newTaskIcon from './newTask.svg'
 import TaskModal from "../Task/TaskModal";
-import './NewTask.css'
+import './NewTaskButton.css'
 
-const NewTask: React.FC = () => {
+const NewTaskButton: React.FC = () => {
     const [showModal, setShowModal] = useState<boolean>(false)
     const modalTitle = "יצירת משימה"
 
@@ -32,4 +32,4 @@ const NewTask: React.FC = () => {
     )
 }
 
-export default NewTask
+export default NewTaskButton
