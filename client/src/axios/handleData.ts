@@ -16,6 +16,10 @@ export const getAllTasks = (): iTask[] => {
     return taskList;
 };
 
+export const getAllParentsTasks = (): iTask[] => {
+    return taskList.filter(task => task.parentId === undefined)
+}
+
 export const findTaskWithId = (
     taskId: number | undefined
 ): iTask | undefined => {
@@ -89,4 +93,12 @@ export const editExistingTask = (editedTask: iTask) => {
     taskList[taskIndex] = {
         ...editedTask,
     }
+}
+
+export const getTaskChildern = (parentTask: iTask): iTask[] => {
+    return taskList.filter(task => task.parentId === parentTask.id)
+}
+
+export const isTaskWithChildren = (parentTask: iTask): boolean => {
+    return taskList.find(task => task.parentId === parentTask.id) ? true : false
 }

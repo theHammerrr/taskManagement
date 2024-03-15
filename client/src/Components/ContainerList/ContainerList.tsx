@@ -3,7 +3,12 @@ import "./ContainerList.css";
 import Task from "../Task/Task";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import { debounce } from "../../helpers/debounce";
-import { getAllTasks, removeTask, filterTasks } from "../../axios/handleData";
+import {
+  getAllTasks,
+  removeTask,
+  filterTasks,
+  getAllParentsTasks,
+} from "../../axios/handleData";
 import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 import { iTask } from "../../CommonInterfaces/Task";
 import {
@@ -24,12 +29,13 @@ const ContainerList: React.FC = () => {
   const possibleStates = [STATUS_FILTER_ALL, ...Object.values(eTaskStatus)];
 
   useEffect(() => {
-    setDisplayTaskList(getAllTasks());
+    setDisplayTaskList(getAllParentsTasks());
   }, []);
 
-  useEffect(() => {
-    searchTextDebounce();
-  }, [textFilter]);
+  // TODO: remove comment later
+  //   useEffect(() => {
+  //     searchTextDebounce();
+  //   }, [textFilter]);
 
   const handleTextFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     setTextFilter(e.currentTarget.value);
@@ -72,14 +78,16 @@ const ContainerList: React.FC = () => {
           possibleStates={possibleStates}
         />
       </div>
-      {displayTaskList.map((currentTask: iTask) => (
-        <Task
-          key={currentTask.id}
-          {...currentTask}
-          onRemoveTask={handleRemoveTask}
-          onEditCallback={changeTaskListCallback}
-        />
-      ))}
+      <div className="tasks-container">
+        {displayTaskList.map((currentTask: iTask) => (
+          <Task
+            key={currentTask.id}
+            {...currentTask}
+            onRemoveTask={handleRemoveTask}
+            onEditCallback={changeTaskListCallback}
+          />
+        ))}
+      </div>
       <div className="new-task-button">
         <NewTaskButton onSaveCallback={changeTaskListCallback} />
       </div>

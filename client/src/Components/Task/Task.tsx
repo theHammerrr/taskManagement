@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Task.css";
 import pencilIcon from "./pencil.svg";
 import trashIcon from "./trash.svg";
 import TaskModal from "./TaskModal";
 import { iTask } from "../../CommonInterfaces/Task";
-import { editExistingTask } from "../../axios/handleData";
+import {
+  editExistingTask,
+  getTaskChildern,
+  isTaskWithChildren,
+} from "../../axios/handleData";
 import { TaskWithTheSameNameExists } from "../../axios/Errors";
 
 interface iTaskProps extends iTask {
@@ -22,6 +26,7 @@ const Task: React.FC<iTaskProps> = ({
   const [isExpended, setExpended] = useState<boolean>(false);
   const [isEditTask, setEditTask] = useState<boolean>(false);
   const [isHover, setIsHover] = useState<boolean>(false);
+  const [hasChildren, setHasChildren] = useState<boolean>(false);
 
   const editModalTitle = `עריכת ${discription}`;
   const currentTask: iTask = {
@@ -30,7 +35,16 @@ const Task: React.FC<iTaskProps> = ({
     status,
   };
 
+  useEffect(() => {
+    setHasChildren(isTaskWithChildren(currentTask));
+  }, []);
+
   const handleExpandClick = () => {
+    // if (!isExpended) {
+    //   const taskChildren = getTaskChildern(currentTask);
+    //   console.log(taskChildren);
+    // }
+
     setExpended((prevState: boolean) => !prevState);
   };
 
@@ -64,9 +78,13 @@ const Task: React.FC<iTaskProps> = ({
         onMouseLeave={() => setIsHover(false)}
       >
         <div className="task-start">
-          <button className="expend-button" onClick={handleExpandClick}>
-            <div className={isExpended ? "arrow-up-task" : "arrow-down-task"} />
-          </button>
+          {hasChildren && (
+            <button className="expend-button" onClick={handleExpandClick}>
+              <div
+                className={isExpended ? "arrow-up-task" : "arrow-down-task"}
+              />
+            </button>
+          )}
           <span>{discription}</span>
         </div>
         <div className="task-status">{status}</div>
@@ -77,6 +95,16 @@ const Task: React.FC<iTaskProps> = ({
           </div>
         )}
       </div>
+      {isExpended &&
+        getTaskChildern(currentTask).map((currentTask: iTask) => (
+          <div className="child-task" key={currentTask.id}>
+            <Task
+              {...currentTask}
+              onRemoveTask={onRemoveTask}
+              onEditCallback={onEditCallback}
+            />
+          </div>
+        ))}
       {isEditTask && (
         <TaskModal
           handleOnClose={closeEditTaskModal}
