@@ -24,3 +24,13 @@ export const findTaskWithId = (taskId: number | undefined): iTask | undefined =>
 export const findTaskWithDescription = (description: string | undefined) => {
     return taskList.find((task: iTask) => task.description === description)
 }
+
+export const removeTask = (taskId: number): iTask[] => {
+    const taskIndex = taskList.findIndex((task: iTask) => task.id === taskId)
+    
+    if (taskIndex != -1) {
+        taskList.splice(taskIndex, 1)
+    }
+
+    return taskList
+}
