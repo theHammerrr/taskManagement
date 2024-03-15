@@ -3,17 +3,20 @@ import "./ContainerList.css";
 import Task from "../Task/Task";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import { debounce } from "../../helpers/debounce";
-import { getAllTasks } from "../../axios/tempData";
+import { getAllTasks, removeTask, filterTasks } from "../../axios/handleData";
 import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 import { iTask } from "../../CommonInterfaces/Task";
+import {
+  eTaskStatusFilter,
+  eTaskStatusFilterAll,
+} from "../../CommonInterfaces/FilterTasks";
 
-const STATUS_FILTER_ALL = "הכל";
+const STATUS_FILTER_ALL = eTaskStatusFilterAll.ALL;
 
 const ContainerList: React.FC = () => {
-  const taskList = getAllTasks();
-  const [statusFilter, setStatusFilter] = useState<eTaskStatus | string>(
-    STATUS_FILTER_ALL
-  );
+  const [statusFilter, setStatusFilter] =
+    useState<eTaskStatusFilter>(STATUS_FILTER_ALL);
+
   const [textFilter, setTextFilter] = useState<string>("");
   const [displayTaskList, setDisplayTaskList] = useState<iTask[]>([]);
 
@@ -24,41 +27,28 @@ const ContainerList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    searchTextDebounce(textFilter);
+    searchTextDebounce();
   }, [textFilter]);
 
   const handleTextFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     setTextFilter(e.currentTarget.value);
   };
 
-  const searchTasks = (text: string) => {
-    setDisplayTaskList(() =>
-      taskList.filter((currentTask) => currentTask.description.includes(text))
-    );
-  };
-
-  const searchTextDebounce = debounce((text: string) => {
-    searchTasks(text);
+  const searchTextDebounce = debounce(() => {
+    setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
   }, 300);
 
   const handleChangeFilter = (value: string) => {
     if (value === statusFilter) return;
 
-    setStatusFilter(value as eTaskStatus | string);
-
-    if (value === STATUS_FILTER_ALL) {
-      setDisplayTaskList(taskList);
-    } else {
-      setDisplayTaskList(() =>
-        taskList.filter((task: iTask) => task.status === value)
-      );
-    }
+    setStatusFilter(value as eTaskStatusFilter);
+    setDisplayTaskList(
+      filterTasks({ textFilter, statusFilter: value as eTaskStatusFilter })
+    );
   };
 
   const handleRemoveTask = (task: iTask) => {
-    setDisplayTaskList(() =>
-      displayTaskList.filter((currentTask) => task.id !== currentTask.id)
-    );
+    setDisplayTaskList(removeTask(task));
   };
 
   return (
