@@ -4,9 +4,12 @@ import pencilIcon from "./pencil.svg";
 import trashIcon from "./trash.svg";
 import TaskModal from "./TaskModal";
 import { iTask } from "../../CommonInterfaces/Task";
+import { editExistingTask } from "../../axios/handleData";
+import { TaskWithTheSameDescriptionExists } from "../../axios/Errors";
 
 interface iTaskProps extends iTask {
   onRemoveTask: (task: iTask) => void;
+  onEditCallback?: () => void;
 }
 
 const Task: React.FC<iTaskProps> = ({
@@ -14,6 +17,7 @@ const Task: React.FC<iTaskProps> = ({
   description: discription,
   status,
   onRemoveTask,
+  onEditCallback = () => {},
 }: iTaskProps) => {
   const [isExpended, setExpended] = useState<boolean>(false);
   const [isEditTask, setEditTask] = useState<boolean>(false);
@@ -38,7 +42,20 @@ const Task: React.FC<iTaskProps> = ({
     setEditTask(false);
   };
 
-  const handleSaveEditModal = (task: iTask) => {};
+  const handleSaveEditModal = (editedTask: iTask) => {
+    try {
+      editExistingTask(editedTask);
+      closeEditTaskModal();
+      onEditCallback();
+    } catch (err) {
+      //TODO: change later when instanceof is fixed
+      //   if (err instanceof TaskWithTheSameDescriptionExists) {
+      //     alert(err.message);
+      //   }
+
+      alert((err as TaskWithTheSameDescriptionExists).message);
+    }
+  };
 
   return (
     <>
@@ -64,9 +81,7 @@ const Task: React.FC<iTaskProps> = ({
       {isEditTask && (
         <TaskModal
           handleOnClose={closeEditTaskModal}
-          // handleOnSave={handleSaveEditModal}
-          handleOnSave={() => console.log()}
-          showModal={isEditTask}
+          onSaveTask={handleSaveEditModal}
           title={editModalTitle}
           givenTask={currentTask}
         />

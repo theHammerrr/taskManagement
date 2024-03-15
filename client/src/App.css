@@ -9,9 +9,3 @@ body {
   direction: rtl;
   margin: auto;
 }
-
-.new-task-button {
-  position: absolute;
-  left: 3%;
-  bottom: 5%;
-}

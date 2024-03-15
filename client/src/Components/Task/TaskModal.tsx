@@ -7,12 +7,14 @@ import {
   getAllTasks,
   findTaskWithDescription,
   findTaskWithId,
+  findPossibleParents,
 } from "../../axios/handleData";
 import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 
-interface TaskModalProps extends iModalProps {
+interface TaskModalProps extends Omit<iModalProps, "handleOnSave"> {
   givenTask?: iTask;
   title: string;
+  onSaveTask: (savedTask: iTask) => void;
 }
 
 const demoTask = {
@@ -21,15 +23,14 @@ const demoTask = {
   status: eTaskStatus.ACTIVE,
 };
 
+const UNLINK_TASK_TEXT: string = "בטל קישור למטרה";
+
 const TaskModal: React.FC<TaskModalProps> = ({
   handleOnClose,
-  showModal,
   title,
-  handleOnSave,
+  onSaveTask,
   givenTask,
 }) => {
-  const allTasks: iTask[] = getAllTasks();
-
   const [currentTask, setTask] = useState<iTask>(
     givenTask ? givenTask : demoTask
   );
@@ -37,13 +38,10 @@ const TaskModal: React.FC<TaskModalProps> = ({
     findTaskWithId(currentTask.parentId)
   );
 
-  const unlinkTaskText: string = "בטל קישור למטרה";
-
-  const possibleParents: string[] = allTasks
-    .map((task) => task.description)
-    .filter((description) => description !== currentTask.description);
-
-  possibleParents.unshift(unlinkTaskText);
+  const possibleParents: string[] = [UNLINK_TASK_TEXT];
+  possibleParents.push(
+    ...findPossibleParents(currentTask).map((task) => task.description)
+  );
 
   type taskProperties = keyof iTask;
   const handleChangeTask = <T,>(value: T, property: taskProperties) => {
@@ -54,7 +52,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   };
 
   const handleLinkTaskToParent = (parentDiscription: string) => {
-    if (parentDiscription === unlinkTaskText) {
+    if (parentDiscription === UNLINK_TASK_TEXT) {
       const { parentId: _, ...orphanTask }: iTask = currentTask;
       setTask({
         ...orphanTask,
@@ -64,15 +62,15 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
     const currentParent = findTaskWithId(currentTask.parentId);
 
-    if (!currentParent || currentParent.description !== parentDiscription) {
+    if (currentParent && currentParent.description !== parentDiscription) {
       const newParent = findTaskWithDescription(parentDiscription);
       if (newParent) handleChangeTask<number>(newParent?.id, "parentId");
     }
   };
 
-  //   const handleOnSubmit = () => {
-  //     onSave(currentTask);
-  //   };
+  const handleSave = () => {
+    onSaveTask(currentTask);
+  };
 
   useEffect(() => {
     if (currentTask.parentId) {
@@ -83,11 +81,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   }, [currentTask.parentId]);
 
   return (
-    <Modal
-      showModal={showModal}
-      handleOnClose={handleOnClose}
-      handleOnSave={handleOnSave}
-    >
+    <Modal handleOnClose={handleOnClose} handleOnSave={handleSave}>
       <div className="modal-children">
         <span className="title">{title}</span>
         <div className="input-container">
@@ -118,7 +112,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
           <span>קישור למשימה:</span>
           <DropdownFilter
             currentFilter={
-              currentParent ? currentParent.description : unlinkTaskText
+              currentParent ? currentParent.description : UNLINK_TASK_TEXT
             }
             handleClickItem={(parentDiscription) =>
               handleLinkTaskToParent(parentDiscription)
