@@ -1,7 +1,7 @@
 import { iTask } from "../CommonInterfaces/Task";
 import taskList from "./tempData";
 import { eTaskStatusFilterAll, iFilterTasks } from "../CommonInterfaces/FilterTasks";
-import { TaskAlreadyExists, TaskDoesNotExists, TaskWithTheSameDescriptionExists } from "./Errors";
+import { TaskDoesNotExists, TaskWithTheSameNameExists } from "./Errors";
 
 const STATUS_FILTER_ALL = eTaskStatusFilterAll.ALL;
 let counter = taskList.length // only goes up
@@ -58,7 +58,7 @@ export const addNewTask = (newTask: iTask) => {
     const isTaskDescriptionExists = findTaskWithDescription(newTask.description) ? true : false
 
     if (isTaskDescriptionExists) {
-        throw new TaskAlreadyExists()
+        throw new TaskWithTheSameNameExists()
     }
 
     const newId = generateId()
@@ -77,7 +77,7 @@ export const editExistingTask = (editedTask: iTask) => {
             task.id !== editedTask.id) ? true : false
 
     if (isOtherTaskWithSameDescription) {
-        throw new TaskWithTheSameDescriptionExists()
+        throw new TaskWithTheSameNameExists()
     }
 
     const taskIndex = taskList.findIndex(task => task.id === editedTask.id)

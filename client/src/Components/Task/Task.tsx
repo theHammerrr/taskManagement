@@ -5,7 +5,7 @@ import trashIcon from "./trash.svg";
 import TaskModal from "./TaskModal";
 import { iTask } from "../../CommonInterfaces/Task";
 import { editExistingTask } from "../../axios/handleData";
-import { TaskWithTheSameDescriptionExists } from "../../axios/Errors";
+import { TaskWithTheSameNameExists } from "../../axios/Errors";
 
 interface iTaskProps extends iTask {
   onRemoveTask: (task: iTask) => void;
@@ -48,12 +48,11 @@ const Task: React.FC<iTaskProps> = ({
       closeEditTaskModal();
       onEditCallback();
     } catch (err) {
-      //TODO: change later when instanceof is fixed
-      //   if (err instanceof TaskWithTheSameDescriptionExists) {
-      //     alert(err.message);
-      //   }
-
-      alert((err as TaskWithTheSameDescriptionExists).message);
+      if (err instanceof TaskWithTheSameNameExists) {
+        alert(err.message);
+      } else {
+        console.log(err);
+      }
     }
   };
 

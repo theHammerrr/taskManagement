@@ -4,7 +4,7 @@ import TaskModal from "../Task/TaskModal";
 import "./NewTaskButton.css";
 import { iTask } from "../../CommonInterfaces/Task";
 import { addNewTask } from "../../axios/handleData";
-import { TaskAlreadyExists } from "../../axios/Errors";
+import { TaskWithTheSameNameExists } from "../../axios/Errors";
 
 interface iNewTaskButtonProps {
   onSaveCallback?: () => void;
@@ -30,12 +30,11 @@ const NewTaskButton: React.FC<iNewTaskButtonProps> = ({
       handleCloseModal();
       onSaveCallback();
     } catch (err) {
-      //TODO: change it later
-      //   if (err instanceof TaskAlreadyExists) {
-      //     alert(err.message);
-      //   }
-
-      alert((err as TaskAlreadyExists).message);
+      if (err instanceof TaskWithTheSameNameExists) {
+        alert(err.message);
+      } else {
+        console.log(err);
+      }
     }
   };
 
