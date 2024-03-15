@@ -1,72 +1,80 @@
 import React, { useEffect, useState } from "react";
-import './ContainerList.css'
+import "./ContainerList.css";
 import Task from "../Task/Task";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import { debounce } from "../../helpers/debounce";
-import { getAllTasks } from "../../axios/tempData";
+import { getAllTasks, removeTask, filterTasks } from "../../axios/handleData";
 import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 import { iTask } from "../../CommonInterfaces/Task";
+import {
+  eTaskStatusFilter,
+  eTaskStatusFilterAll,
+} from "../../CommonInterfaces/FilterTasks";
+
+const STATUS_FILTER_ALL = eTaskStatusFilterAll.ALL;
 
 const ContainerList: React.FC = () => {
-    // TODO: change later
-    const taskList = getAllTasks()
-    const statusFilterAll = "הכל"
-    const [statusFilter, setStatusFilter] = useState<eTaskStatus | string>(statusFilterAll)
-    const [displayTaskList, setDisplayTaskList] = useState<iTask[]>([])
+  const [statusFilter, setStatusFilter] =
+    useState<eTaskStatusFilter>(STATUS_FILTER_ALL);
 
-    const possibleStates = [statusFilterAll, ...Object.values(eTaskStatus)]
+  const [textFilter, setTextFilter] = useState<string>("");
+  const [displayTaskList, setDisplayTaskList] = useState<iTask[]>([]);
 
-    useEffect(() => {
-        setDisplayTaskList(getAllTasks())
-    }, [])
+  const possibleStates = [STATUS_FILTER_ALL, ...Object.values(eTaskStatus)];
 
-    const searchTasks = (text: string) => {
-        setDisplayTaskList(() =>
-            taskList.filter(currentTask => currentTask.description.includes(text))
-        )
-    }
+  useEffect(() => {
+    setDisplayTaskList(getAllTasks());
+  }, []);
 
-    const handleTextFilterChange = debounce((value: string) => {
-        searchTasks(value)
-    }, 300)
+  useEffect(() => {
+    searchTextDebounce();
+  }, [textFilter]);
 
-    const handleChangeFilter = (value: string ) => {
-        if (value === statusFilter) return
+  const handleTextFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setTextFilter(e.currentTarget.value);
+  };
 
-        setStatusFilter(value as eTaskStatus | string)
+  const searchTextDebounce = debounce(() => {
+    setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
+  }, 300);
 
-        if (value === statusFilterAll) {
-            setDisplayTaskList(taskList)
-        } else {
-            setDisplayTaskList(() => taskList.filter((task: iTask) => task.status === value))
-        }
-    }
+  const handleChangeFilter = (value: string) => {
+    if (value === statusFilter) return;
 
-    const handleRemoveTask = (task: iTask) => {
-        setDisplayTaskList(() =>
-            displayTaskList.filter(currentTask => task.id !== currentTask.id)
-        )
-    }
+    setStatusFilter(value as eTaskStatusFilter);
+    setDisplayTaskList(
+      filterTasks({ textFilter, statusFilter: value as eTaskStatusFilter })
+    );
+  };
 
-    return (
-        <div className="ContainerList">
-            {/* TODO: change to it won't render the function everytime */}
-            <input type="text" className="SearchList" onChange={e => handleTextFilterChange(e.target.value)} />
-            <div className="filter-container">
-                <span >
-                    סינון לפי:
-                </span>
-                <DropdownFilter
-                    currentFilter={statusFilter}
-                    handleClickItem={handleChangeFilter}
-                    possibleStates={possibleStates} />
-            </div>
-            {
-                displayTaskList.map((currentTask: iTask) =>
-                    <Task key={currentTask.id} {...currentTask} onRemoveTask={handleRemoveTask} />)
-            }
-        </div>
-    )
-}
+  const handleRemoveTask = (task: iTask) => {
+    setDisplayTaskList(removeTask(task));
+  };
 
-export default ContainerList
+  return (
+    <div className="ContainerList">
+      <input
+        type="text"
+        className="SearchList"
+        onChange={handleTextFilterChange}
+      />
+      <div className="filter-container">
+        <span>סינון לפי:</span>
+        <DropdownFilter
+          currentFilter={statusFilter}
+          handleClickItem={handleChangeFilter}
+          possibleStates={possibleStates}
+        />
+      </div>
+      {displayTaskList.map((currentTask: iTask) => (
+        <Task
+          key={currentTask.id}
+          {...currentTask}
+          onRemoveTask={handleRemoveTask}
+        />
+      ))}
+    </div>
+  );
+};
+
+export default ContainerList;
