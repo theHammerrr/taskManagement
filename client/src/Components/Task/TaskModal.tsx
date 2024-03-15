@@ -12,8 +12,7 @@ import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 
 interface TaskModalProps extends iModalProps {
   givenTask?: iTask;
-  onSave: (choesenData: iTask) => void;
-  onClose: () => void;
+  title: string;
 }
 
 const demoTask = {
@@ -23,10 +22,10 @@ const demoTask = {
 };
 
 const TaskModal: React.FC<TaskModalProps> = ({
-  onClose,
+  handleOnClose,
   showModal,
   title,
-  onSave,
+  handleOnSave,
   givenTask,
 }) => {
   const allTasks: iTask[] = getAllTasks();
@@ -71,9 +70,9 @@ const TaskModal: React.FC<TaskModalProps> = ({
     }
   };
 
-  const handleOnSubmit = () => {
-    onSave(currentTask);
-  };
+  //   const handleOnSubmit = () => {
+  //     onSave(currentTask);
+  //   };
 
   useEffect(() => {
     if (currentTask.parentId) {
@@ -84,8 +83,13 @@ const TaskModal: React.FC<TaskModalProps> = ({
   }, [currentTask.parentId]);
 
   return (
-    <Modal showModal={showModal} title={title}>
+    <Modal
+      showModal={showModal}
+      handleOnClose={handleOnClose}
+      handleOnSave={handleOnSave}
+    >
       <div className="modal-children">
+        <span className="title">{title}</span>
         <div className="input-container">
           <span>שם:</span>
           <input
@@ -121,14 +125,6 @@ const TaskModal: React.FC<TaskModalProps> = ({
             }
             possibleStates={possibleParents}
           />
-        </div>
-        <div className="modal-bottom-buttons">
-          <button className="modal-close" onClick={onClose}>
-            ביטול
-          </button>
-          <button className="modal-save" onClick={handleOnSubmit}>
-            שמירה
-          </button>
         </div>
       </div>
     </Modal>

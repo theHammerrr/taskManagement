@@ -42,10 +42,8 @@
     color: white;
 }
 
-.modal-save {
-    background-color: #4981d8;
-}
-
-.modal-close {
-    background-color: #453d41;
+.title {
+    font-size: 5vh;
+    font-weight: bold;
+    /* TODO: change font Aduma*/
 }
