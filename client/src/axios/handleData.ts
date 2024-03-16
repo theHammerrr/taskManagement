@@ -2,8 +2,6 @@ import { iTask } from "../CommonInterfaces/Task";
 import taskList from "./tempData";
 import { eTaskStatusFilterAll, iFilterTasks } from "../CommonInterfaces/FilterTasks";
 
-const STATUS_FILTER_ALL = eTaskStatusFilterAll.ALL;
-
 export const getAllTasks = (): iTask[] => {
     return taskList;
 };
@@ -34,7 +32,7 @@ export const removeTask = (taskToDelete: iTask): iTask[] => {
 export const filterTasks = (filterData: iFilterTasks) => {
     const filteredTasks = taskList.filter((currentTask) =>
         currentTask.description.includes(filterData.textFilter) &&
-        (filterData.statusFilter === STATUS_FILTER_ALL || currentTask.status === filterData.statusFilter))
+        (filterData.statusFilter === eTaskStatusFilterAll.ALL || currentTask.status === filterData.statusFilter))
 
     return filteredTasks
 }

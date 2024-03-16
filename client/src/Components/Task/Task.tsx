@@ -1,79 +1,89 @@
 import React, { useState } from "react";
-import './Task.css'
-import pencilIcon from './pencil.svg'
-import trashIcon from './trash.svg'
+import "./Task.css";
+import pencilIcon from "./pencil.svg";
+import trashIcon from "./trash.svg";
 import TaskModal from "./TaskModal";
 import { iTask } from "../../CommonInterfaces/Task";
 
-
 interface iTaskProps extends iTask {
-    onRemoveTask: (task: iTask) => void
+  onRemoveTask: (task: iTask) => void;
 }
 
 const Task: React.FC<iTaskProps> = ({
-    id,
-    description: discription,
-    status,
-    onRemoveTask
+  id,
+  description,
+  status,
+  onRemoveTask,
 }: iTaskProps) => {
-    const [isExpended, setExpended] = useState<boolean>(false)
-    const [isEditTask, setEditTask] = useState<boolean>(false)
-    const [isHover, setIsHover] = useState<boolean>(false)
+  const [isExpended, setExpended] = useState<boolean>(false);
+  const [isEditTask, setEditTask] = useState<boolean>(false);
+  const [isHover, setIsHover] = useState<boolean>(false);
 
-    const editModalTitle = `עריכת ${discription}`
-    const currentTask: iTask = {
-        id,
-        description: discription,
-        status
-    }
+  const editModalTitle = `עריכת ${description}`;
+  const currentTask: iTask = {
+    id,
+    description,
+    status,
+  };
 
-    const handleExpandClick = () => {
-        setExpended((prevState: boolean) => !prevState)
-    }
+  const handleMouseOnLeave = () => {
+    setIsHover(false);
+  };
 
-    const openEditTaskModal = () => {
-        setEditTask(true)
-    }
+  const handleMouseOnEnter = () => {
+    setIsHover(true);
+  };
 
-    const closeEditTaskModal = () => {
-        setEditTask(false)
-    }
+  const handleExpandClick = () => {
+    setExpended((prevState: boolean) => !prevState);
+  };
 
-    const handleSaveEditModal = (task: iTask) => {
+  const handleRemoveTask = () => {
+    onRemoveTask(currentTask);
+  };
 
-    }
+  const openEditTaskModal = () => {
+    setEditTask(true);
+  };
 
-    return (
-        <>
-            <div className="task"
-                onMouseEnter={() => setIsHover(true)}
-                onMouseLeave={() => setIsHover(false)}>
-                <div className="task-start">
-                    <button className="expend-button" onClick={handleExpandClick} >
-                        <div className={isExpended ? "arrow-up-task" : "arrow-down-task"} />
-                    </button>
-                    <span>{discription}</span>
-                </div>
-                <div className="task-status">{status}</div>
-                {isHover &&
-                    <div className="task-icons">
-                        <img src={pencilIcon} onClick={openEditTaskModal} />
-                        <img src={trashIcon} onClick={() => onRemoveTask(currentTask)} />
-                    </div>
-                }
-            </div>
-            {
-                isEditTask &&
-                <TaskModal
-                    onClose={closeEditTaskModal}
-                    onSave={handleSaveEditModal}
-                    showModal={isEditTask}
-                    title={editModalTitle}
-                    givenTask={currentTask} />
-            }
-        </>
-    )
-}
+  const closeEditTaskModal = () => {
+    setEditTask(false);
+  };
 
-export default Task
+  const handleSaveEditModal = (task: iTask) => {};
 
+  return (
+    <>
+      <div
+        className="task"
+        onMouseEnter={handleMouseOnEnter}
+        onMouseLeave={handleMouseOnLeave}
+      >
+        <div className="task-start">
+          <button className="expend-button" onClick={handleExpandClick}>
+            <div className={isExpended ? "arrow-up-task" : "arrow-down-task"} />
+          </button>
+          <span>{description}</span>
+        </div>
+        <div className="task-status">{status}</div>
+        {isHover && (
+          <div className="task-icons">
+            <img src={pencilIcon} onClick={openEditTaskModal} />
+            <img src={trashIcon} onClick={handleRemoveTask} />
+          </div>
+        )}
+      </div>
+      {isEditTask && (
+        <TaskModal
+          onClose={closeEditTaskModal}
+          onSave={handleSaveEditModal}
+          showModal={isEditTask}
+          title={editModalTitle}
+          givenTask={currentTask}
+        />
+      )}
+    </>
+  );
+};
+
+export default Task;

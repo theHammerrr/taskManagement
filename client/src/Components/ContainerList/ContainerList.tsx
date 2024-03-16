@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ContainerList.css";
 import Task from "../Task/Task";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
-import { debounce } from "../../helpers/debounce";
+import { useDebounce } from "../../helpers/debounce";
 import { getAllTasks, removeTask, filterTasks } from "../../axios/handleData";
 import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 import { iTask } from "../../CommonInterfaces/Task";
@@ -11,20 +11,26 @@ import {
   eTaskStatusFilterAll,
 } from "../../CommonInterfaces/FilterTasks";
 
-const STATUS_FILTER_ALL = eTaskStatusFilterAll.ALL;
-
 const ContainerList: React.FC = () => {
-  const [statusFilter, setStatusFilter] =
-    useState<eTaskStatusFilter>(STATUS_FILTER_ALL);
+  const [statusFilter, setStatusFilter] = useState<eTaskStatusFilter>(
+    eTaskStatusFilterAll.ALL
+  );
 
   const [textFilter, setTextFilter] = useState<string>("");
   const [displayTaskList, setDisplayTaskList] = useState<iTask[]>([]);
 
-  const possibleStates = [STATUS_FILTER_ALL, ...Object.values(eTaskStatus)];
+  const possibleStates = [
+    eTaskStatusFilterAll.ALL,
+    ...Object.values(eTaskStatus),
+  ];
 
   useEffect(() => {
     setDisplayTaskList(getAllTasks());
   }, []);
+
+  const searchTextDebounce = useDebounce(() => {
+    setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
+  }, 1000);
 
   useEffect(() => {
     searchTextDebounce();
@@ -33,10 +39,6 @@ const ContainerList: React.FC = () => {
   const handleTextFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     setTextFilter(e.currentTarget.value);
   };
-
-  const searchTextDebounce = debounce(() => {
-    setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
-  }, 300);
 
   const handleChangeFilter = (value: string) => {
     if (value === statusFilter) return;

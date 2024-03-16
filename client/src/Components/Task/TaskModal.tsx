@@ -31,20 +31,20 @@ const TaskModal: React.FC<TaskModalProps> = ({
 }) => {
   const allTasks: iTask[] = getAllTasks();
 
-  const [currentTask, setTask] = useState<iTask>(
-    givenTask ? givenTask : demoTask
-  );
+  const [currentTask, setTask] = useState<iTask>(givenTask ?? demoTask);
   const [currentParent, setCurrentParent] = useState<iTask | undefined>(
     findTaskWithId(currentTask.parentId)
   );
 
   const unlinkTaskText: string = "בטל קישור למטרה";
 
-  const possibleParents: string[] = allTasks
-    .map((task) => task.description)
-    .filter((description) => description !== currentTask.description);
+  const possibleParents: string[] = [unlinkTaskText];
 
-  possibleParents.unshift(unlinkTaskText);
+  possibleParents.push(
+    ...allTasks
+      .filter((task) => task.id !== currentTask.id)
+      .map((task) => task.description)
+  );
 
   type taskProperties = keyof iTask;
   const handleChangeTask = <T,>(value: T, property: taskProperties) => {
@@ -54,8 +54,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
     });
   };
 
-  const handleLinkTaskToParent = (parentDiscription: string) => {
-    if (parentDiscription === unlinkTaskText) {
+  const handleLinkTaskToParent = (parentDescription: string) => {
+    if (parentDescription === unlinkTaskText) {
       const { parentId: _, ...orphanTask }: iTask = currentTask;
       setTask({
         ...orphanTask,
@@ -65,8 +65,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
     const currentParent = findTaskWithId(currentTask.parentId);
 
-    if (!currentParent || currentParent.description !== parentDiscription) {
-      const newParent = findTaskWithDescription(parentDiscription);
+    if (!currentParent || currentParent.description !== parentDescription) {
+      const newParent = findTaskWithDescription(parentDescription);
       if (newParent) handleChangeTask<number>(newParent?.id, "parentId");
     }
   };
@@ -75,6 +75,15 @@ const TaskModal: React.FC<TaskModalProps> = ({
     onSave(currentTask);
   };
 
+  const handleDescriptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    handleChangeTask<string>(event.currentTarget.value, "description");
+  };
+
+  const handleDropdownChange = (status: string) => {
+    handleChangeTask<eTaskStatus>(status as eTaskStatus, "status");
+  };
   useEffect(() => {
     if (currentTask.parentId) {
       setCurrentParent(findTaskWithId(currentTask.parentId));
@@ -92,21 +101,14 @@ const TaskModal: React.FC<TaskModalProps> = ({
             className="input"
             value={currentTask.description}
             placeholder="שם..."
-            onChange={(event) => {
-              handleChangeTask<string>(
-                event.currentTarget.value,
-                "description"
-              );
-            }}
+            onChange={handleDescriptionChange}
           />
         </div>
         <div className="dropdown-status">
           <span>סטטוס:</span>
           <DropdownFilter
             currentFilter={currentTask.status}
-            handleClickItem={(status) =>
-              handleChangeTask<eTaskStatus>(status as eTaskStatus, "status")
-            }
+            handleClickItem={handleDropdownChange}
             possibleStates={Object.values(eTaskStatus)}
           />
         </div>
@@ -116,9 +118,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
             currentFilter={
               currentParent ? currentParent.description : unlinkTaskText
             }
-            handleClickItem={(parentDiscription) =>
-              handleLinkTaskToParent(parentDiscription)
-            }
+            handleClickItem={handleLinkTaskToParent}
             possibleStates={possibleParents}
           />
         </div>
