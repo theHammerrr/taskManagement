@@ -3,9 +3,7 @@ import taskList from "./tempData";
 import { eTaskStatusFilterAll, iFilterTasks } from "../CommonInterfaces/FilterTasks";
 import { TaskDoesNotExists, TaskWithTheSameNameExists } from "./Errors";
 
-const STATUS_FILTER_ALL = eTaskStatusFilterAll.ALL;
 let counter = taskList.length // only goes up
-
 const generateId = () => {
     counter++
     return counter
@@ -49,7 +47,7 @@ export const removeTask = (taskToDelete: iTask): iTask[] => {
 export const filterTasks = (filterData: iFilterTasks): iTask[] => {
     const filteredTasks = taskList.filter((currentTask) =>
         currentTask.description.includes(filterData.textFilter) &&
-        (filterData.statusFilter === STATUS_FILTER_ALL || currentTask.status === filterData.statusFilter))
+        (filterData.statusFilter === eTaskStatusFilterAll.ALL || currentTask.status === filterData.statusFilter))
 
     return filteredTasks
 }

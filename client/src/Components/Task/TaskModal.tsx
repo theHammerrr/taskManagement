@@ -31,9 +31,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   onSaveTask,
   givenTask,
 }) => {
-  const [currentTask, setTask] = useState<iTask>(
-    givenTask ? givenTask : demoTask
-  );
+  const [currentTask, setTask] = useState<iTask>(givenTask ?? demoTask);
   const [currentParentName, setCurrentParentName] = useState<string>(
     findTaskWithId(currentTask.parentId)?.description || UNLINK_TASK_TEXT
   );
@@ -70,28 +68,21 @@ const TaskModal: React.FC<TaskModalProps> = ({
       handleChangeTask<number>(newParent.id, "parentId");
       setCurrentParentName(parentDiscription);
     }
-
-    // const currentParent = findTaskWithId(currentTask.parentId);
-
-    // if (currentParent && currentParent.description !== parentDiscription) {
-    //   const newParent = findTaskWithDescription(parentDiscription);
-    //   if (newParent) handleChangeTask<number>(newParent?.id, "parentId");
-    // }
   };
 
   const handleSave = () => {
     onSaveTask(currentTask);
   };
 
-  //   useEffect(() => {
-  //     console.log(123);
+  const handleDescriptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    handleChangeTask<string>(event.currentTarget.value, "description");
+  };
 
-  //     if (currentTask.parentId) {
-  //       setCurrentParent(findTaskWithId(currentTask.parentId));
-  //     } else {
-  //       setCurrentParent(undefined);
-  //     }
-  //   }, [currentTask.parentId]);
+  const handleDropdownChange = (status: string) => {
+    handleChangeTask<eTaskStatus>(status as eTaskStatus, "status");
+  };
 
   return (
     <Modal handleOnClose={handleOnClose} handleOnSave={handleSave}>
@@ -103,21 +94,14 @@ const TaskModal: React.FC<TaskModalProps> = ({
             className="input"
             value={currentTask.description}
             placeholder="שם..."
-            onChange={(event) => {
-              handleChangeTask<string>(
-                event.currentTarget.value,
-                "description"
-              );
-            }}
+            onChange={handleDescriptionChange}
           />
         </div>
         <div className="dropdown-status">
           <span>סטטוס:</span>
           <DropdownFilter
             currentFilter={currentTask.status}
-            handleClickItem={(status) =>
-              handleChangeTask<eTaskStatus>(status as eTaskStatus, "status")
-            }
+            handleClickItem={handleDropdownChange}
             possibleStates={Object.values(eTaskStatus)}
           />
         </div>
@@ -125,9 +109,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
           <span>קישור למשימה:</span>
           <DropdownFilter
             currentFilter={currentParentName}
-            handleClickItem={(parentDiscription) =>
-              handleLinkTaskToParent(parentDiscription)
-            }
+            handleClickItem={handleLinkTaskToParent}
             possibleStates={possibleParents}
           />
         </div>

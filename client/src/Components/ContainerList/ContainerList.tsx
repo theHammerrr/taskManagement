@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import "./ContainerList.css";
 import Task from "../Task/Task";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
-import { debounce } from "../../helpers/debounce";
 import {
   getAllTasks,
   removeTask,
   filterTasks,
   getAllParentsTasks,
 } from "../../axios/handleData";
+import { useDebounce } from "../../helpers/debounce";
 import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
 import { iTask } from "../../CommonInterfaces/Task";
 import {
@@ -17,33 +17,34 @@ import {
 } from "../../CommonInterfaces/FilterTasks";
 import NewTaskButton from "../newTask/NewTaskButton";
 
-const STATUS_FILTER_ALL = eTaskStatusFilterAll.ALL;
-
 const ContainerList: React.FC = () => {
-  const [statusFilter, setStatusFilter] =
-    useState<eTaskStatusFilter>(STATUS_FILTER_ALL);
+  const [statusFilter, setStatusFilter] = useState<eTaskStatusFilter>(
+    eTaskStatusFilterAll.ALL
+  );
 
   const [textFilter, setTextFilter] = useState<string>("");
   const [displayTaskList, setDisplayTaskList] = useState<iTask[]>([]);
 
-  const possibleStates = [STATUS_FILTER_ALL, ...Object.values(eTaskStatus)];
+  const possibleStates = [
+    eTaskStatusFilterAll.ALL,
+    ...Object.values(eTaskStatus),
+  ];
 
   useEffect(() => {
     setDisplayTaskList(getAllParentsTasks());
   }, []);
 
-  // TODO: remove comment later
-  //   useEffect(() => {
-  //     searchTextDebounce();
-  //   }, [textFilter]);
+  const searchTextDebounce = useDebounce(() => {
+    setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
+  }, 1000);
+
+  useEffect(() => {
+    searchTextDebounce();
+  }, [textFilter]);
 
   const handleTextFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     setTextFilter(e.currentTarget.value);
   };
-
-  const searchTextDebounce = debounce(() => {
-    setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
-  }, 300);
 
   const handleChangeFilter = (value: string) => {
     if (value === statusFilter) return;

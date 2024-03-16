@@ -36,20 +36,20 @@ const Task: React.FC<iTaskProps> = ({
     status,
     parentId,
   };
+  const handleMouseOnLeave = () => {
+    setIsHover(false);
+  };
 
-  useEffect(() => {
-    setHasChildren(isTaskWithChildren(currentTask));
-  }, []);
-
+  const handleMouseOnEnter = () => {
+    setIsHover(true);
+  };
   const handleExpandClick = () => {
-    // if (!isExpended) {
-    //   const taskChildren = getTaskChildern(currentTask);
-    //   console.log(taskChildren);
-    // }
-
     setExpended((prevState: boolean) => !prevState);
   };
 
+  const handleRemoveTask = () => {
+    onRemoveTask(currentTask);
+  };
   const openEditTaskModal = () => {
     setEditTask(true);
   };
@@ -72,12 +72,16 @@ const Task: React.FC<iTaskProps> = ({
     }
   };
 
+  useEffect(() => {
+    setHasChildren(isTaskWithChildren(currentTask));
+  }, []);
+
   return (
     <>
       <div
         className="task"
-        onMouseEnter={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}
+        onMouseEnter={handleMouseOnEnter}
+        onMouseLeave={handleMouseOnLeave}
       >
         <div className="task-start">
           {hasChildren && (
@@ -93,7 +97,7 @@ const Task: React.FC<iTaskProps> = ({
         {isHover && (
           <div className="task-icons">
             <img src={pencilIcon} onClick={openEditTaskModal} />
-            <img src={trashIcon} onClick={() => onRemoveTask(currentTask)} />
+            <img src={trashIcon} onClick={handleRemoveTask} />
           </div>
         )}
       </div>
