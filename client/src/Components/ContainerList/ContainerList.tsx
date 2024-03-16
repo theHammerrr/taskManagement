@@ -30,7 +30,7 @@ const ContainerList: React.FC = () => {
 
   const searchTextDebounce = useDebounce(() => {
     setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
-  }, 1000);
+  }, 300);
 
   useEffect(() => {
     searchTextDebounce();
