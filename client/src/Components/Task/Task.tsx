@@ -20,6 +20,7 @@ const Task: React.FC<iTaskProps> = ({
   id,
   description: discription,
   status,
+  parentId = undefined,
   onRemoveTask,
   onEditCallback = () => {},
 }: iTaskProps) => {
@@ -33,6 +34,7 @@ const Task: React.FC<iTaskProps> = ({
     id,
     description: discription,
     status,
+    parentId,
   };
 
   useEffect(() => {

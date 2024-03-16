@@ -54,8 +54,50 @@ export const filterTasks = (filterData: iFilterTasks): iTask[] => {
     return filteredTasks
 }
 
+// returns all the parents and children of the given task. the given task is included.
+export const getTaskAllHierarchy = (currentTask: iTask): iTask[] => {
+    const allHierarchy: iTask[] = [
+        ...getTaskDownHierarchy(currentTask),
+        ...getTaskUpHierarchy(findTaskWithId(currentTask?.parentId))
+    ]
+
+    return allHierarchy
+}
+
+const getTaskDownHierarchy = (currentTask: iTask): iTask[] => {
+    const downHierarchy: iTask[] = []
+    const taskChildren: iTask[] = getTaskChildern(currentTask)
+
+    if (taskChildren.length) {
+        taskChildren.forEach(task => downHierarchy.push(...getTaskDownHierarchy(task)))
+    }
+
+    downHierarchy.push(currentTask)
+
+    return downHierarchy
+}
+
+const getTaskUpHierarchy = (currentTask: iTask | undefined): iTask[] => {
+    if (currentTask === undefined) return []
+    if (currentTask.parentId === undefined) return [currentTask]
+
+    // const parentTask = findTaskWithId(currentTask?.parentId)
+    // console.log(parentTask);
+
+    const upHierarchy = [currentTask, ...getTaskUpHierarchy(findTaskWithId(currentTask?.parentId))]
+    // console.log("up");
+    // console.log(upHierarchy);
+
+    return upHierarchy
+}
+
 export const findPossibleParents = (currentTask: iTask) => {
-    return taskList.filter((task: iTask) => task.id !== currentTask.parentId);
+    const allHierarchy = getTaskAllHierarchy(currentTask).map(task => task.id);
+
+    return taskList.filter((task: iTask) =>
+        // task.id !== currentTask.parentId
+        !allHierarchy.includes(task.id)
+    );
 }
 
 export const addNewTask = (newTask: iTask) => {

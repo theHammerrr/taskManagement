@@ -34,14 +34,15 @@ const TaskModal: React.FC<TaskModalProps> = ({
   const [currentTask, setTask] = useState<iTask>(
     givenTask ? givenTask : demoTask
   );
-  const [currentParent, setCurrentParent] = useState<iTask | undefined>(
-    findTaskWithId(currentTask.parentId)
+  const [currentParentName, setCurrentParentName] = useState<string>(
+    findTaskWithId(currentTask.parentId)?.description || UNLINK_TASK_TEXT
   );
 
   const possibleParents: string[] = [UNLINK_TASK_TEXT];
   possibleParents.push(
     ...findPossibleParents(currentTask).map((task) => task.description)
   );
+  console.log(possibleParents);
 
   type taskProperties = keyof iTask;
   const handleChangeTask = <T,>(value: T, property: taskProperties) => {
@@ -57,28 +58,40 @@ const TaskModal: React.FC<TaskModalProps> = ({
       setTask({
         ...orphanTask,
       });
+      setCurrentParentName(parentDiscription);
       return;
     }
 
-    const currentParent = findTaskWithId(currentTask.parentId);
+    const newParent = findTaskWithDescription(parentDiscription);
 
-    if (currentParent && currentParent.description !== parentDiscription) {
-      const newParent = findTaskWithDescription(parentDiscription);
-      if (newParent) handleChangeTask<number>(newParent?.id, "parentId");
+    if (!newParent) {
+      console.log(`could not find the parent ${parentDiscription}`);
+    } else {
+      handleChangeTask<number>(newParent.id, "parentId");
+      setCurrentParentName(parentDiscription);
     }
+
+    // const currentParent = findTaskWithId(currentTask.parentId);
+
+    // if (currentParent && currentParent.description !== parentDiscription) {
+    //   const newParent = findTaskWithDescription(parentDiscription);
+    //   if (newParent) handleChangeTask<number>(newParent?.id, "parentId");
+    // }
   };
 
   const handleSave = () => {
     onSaveTask(currentTask);
   };
 
-  useEffect(() => {
-    if (currentTask.parentId) {
-      setCurrentParent(findTaskWithId(currentTask.parentId));
-    } else {
-      setCurrentParent(undefined);
-    }
-  }, [currentTask.parentId]);
+  //   useEffect(() => {
+  //     console.log(123);
+
+  //     if (currentTask.parentId) {
+  //       setCurrentParent(findTaskWithId(currentTask.parentId));
+  //     } else {
+  //       setCurrentParent(undefined);
+  //     }
+  //   }, [currentTask.parentId]);
 
   return (
     <Modal handleOnClose={handleOnClose} handleOnSave={handleSave}>
@@ -111,9 +124,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
         <div className="dropdown-lint-task">
           <span>קישור למשימה:</span>
           <DropdownFilter
-            currentFilter={
-              currentParent ? currentParent.description : UNLINK_TASK_TEXT
-            }
+            currentFilter={currentParentName}
             handleClickItem={(parentDiscription) =>
               handleLinkTaskToParent(parentDiscription)
             }

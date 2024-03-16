@@ -24,6 +24,12 @@ const taskList: iTask[] = [
     status: eTaskStatus.COMPLETED,
     parentId: 2
   },
+  {
+    id: 5,
+    description: "משימה 45",
+    status: eTaskStatus.COMPLETED,
+    parentId: 4
+  },
 ];
 
 export default taskList
