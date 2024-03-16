@@ -18,7 +18,7 @@ interface iTaskProps extends iTask {
 
 const Task: React.FC<iTaskProps> = ({
   id,
-  description: discription,
+  description,
   status,
   parentId = undefined,
   onRemoveTask,
@@ -27,15 +27,16 @@ const Task: React.FC<iTaskProps> = ({
   const [isExpended, setExpended] = useState<boolean>(false);
   const [isEditTask, setEditTask] = useState<boolean>(false);
   const [isHover, setIsHover] = useState<boolean>(false);
-  const [hasChildren, setHasChildren] = useState<boolean>(false);
 
-  const editModalTitle = `עריכת ${discription}`;
+  const editModalTitle = `עריכת ${description}`;
   const currentTask: iTask = {
     id,
-    description: discription,
+    description: description,
     status,
     parentId,
   };
+
+  const hasChildren = isTaskWithChildren(currentTask);
   const handleMouseOnLeave = () => {
     setIsHover(false);
   };
@@ -59,6 +60,8 @@ const Task: React.FC<iTaskProps> = ({
   };
 
   const handleSaveEditModal = (editedTask: iTask) => {
+    console.log(editedTask);
+
     try {
       editExistingTask(editedTask);
       closeEditTaskModal();
@@ -72,9 +75,9 @@ const Task: React.FC<iTaskProps> = ({
     }
   };
 
-  useEffect(() => {
-    setHasChildren(isTaskWithChildren(currentTask));
-  }, []);
+  // useEffect(() => {
+  //   setHasChildren(isTaskWithChildren(currentTask));
+  // }, []);
 
   return (
     <>
@@ -91,7 +94,7 @@ const Task: React.FC<iTaskProps> = ({
               />
             </button>
           )}
-          <span>{discription}</span>
+          <span>{description}</span>
         </div>
         <div className="task-status">{status}</div>
         {isHover && (

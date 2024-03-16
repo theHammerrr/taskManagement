@@ -32,15 +32,14 @@ const TaskModal: React.FC<TaskModalProps> = ({
   givenTask,
 }) => {
   const [currentTask, setTask] = useState<iTask>(givenTask ?? demoTask);
-  const [currentParentName, setCurrentParentName] = useState<string>(
-    findTaskWithId(currentTask.parentId)?.description || UNLINK_TASK_TEXT
+  const [currentParent, setCurrentParent] = useState<iTask | undefined>(
+    findTaskWithId(currentTask.parentId)
   );
 
   const possibleParents: string[] = [UNLINK_TASK_TEXT];
   possibleParents.push(
     ...findPossibleParents(currentTask).map((task) => task.description)
   );
-  console.log(possibleParents);
 
   type taskProperties = keyof iTask;
   const handleChangeTask = <T,>(value: T, property: taskProperties) => {
@@ -50,28 +49,13 @@ const TaskModal: React.FC<TaskModalProps> = ({
     });
   };
 
-  const handleLinkTaskToParent = (parentDiscription: string) => {
-    if (parentDiscription === UNLINK_TASK_TEXT) {
-      const { parentId: _, ...orphanTask }: iTask = currentTask;
-      setTask({
-        ...orphanTask,
-      });
-      setCurrentParentName(parentDiscription);
-      return;
-    }
-
-    const newParent = findTaskWithDescription(parentDiscription);
-
-    if (!newParent) {
-      console.log(`could not find the parent ${parentDiscription}`);
-    } else {
-      handleChangeTask<number>(newParent.id, "parentId");
-      setCurrentParentName(parentDiscription);
-    }
+  const handleChangeParentDropdown = (parentDiscription: string) => {
+    setCurrentParent(findTaskWithDescription(parentDiscription));
   };
 
   const handleSave = () => {
-    onSaveTask(currentTask);
+    const newParentId = currentParent?.id ?? undefined;
+    onSaveTask({ ...currentTask, parentId: newParentId });
   };
 
   const handleDescriptionChange = (
@@ -108,8 +92,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
         <div className="dropdown-lint-task">
           <span>קישור למשימה:</span>
           <DropdownFilter
-            currentFilter={currentParentName}
-            handleClickItem={handleLinkTaskToParent}
+            currentFilter={currentParent?.description ?? UNLINK_TASK_TEXT}
+            handleClickItem={handleChangeParentDropdown}
             possibleStates={possibleParents}
           />
         </div>

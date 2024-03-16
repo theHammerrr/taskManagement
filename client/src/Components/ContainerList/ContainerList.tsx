@@ -7,6 +7,8 @@ import {
   removeTask,
   filterTasks,
   getAllParentsTasks,
+  getTaskChildern,
+  getTaskDownHierarchy,
 } from "../../axios/handleData";
 import { useDebounce } from "../../helpers/debounce";
 import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
@@ -30,13 +32,22 @@ const ContainerList: React.FC = () => {
     ...Object.values(eTaskStatus),
   ];
 
+  const handleSetDisplayTaskList = (newList: iTask[]) => {
+    setDisplayTaskList(newList.filter((task) => task.parentId === undefined));
+  };
+
+  const handleFilterTasks = (): iTask[] => {
+    return filterTasks({ textFilter, statusFilter });
+  };
+
   useEffect(() => {
     setDisplayTaskList(getAllParentsTasks());
   }, []);
 
+  //TODO: fix filtering for a child task
   const searchTextDebounce = useDebounce(() => {
-    setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
-  }, 1000);
+    handleSetDisplayTaskList(handleFilterTasks());
+  }, 300);
 
   useEffect(() => {
     searchTextDebounce();
@@ -50,18 +61,22 @@ const ContainerList: React.FC = () => {
     if (value === statusFilter) return;
 
     setStatusFilter(value as eTaskStatusFilter);
-    setDisplayTaskList(
+    handleSetDisplayTaskList(
       filterTasks({ textFilter, statusFilter: value as eTaskStatusFilter })
     );
   };
 
   const handleRemoveTask = (task: iTask) => {
-    const newList = removeTask(task);
-    setDisplayTaskList([...newList]);
+    const taskGenerationDown = getTaskDownHierarchy(task);
+    taskGenerationDown.forEach((task) => {
+      removeTask(task);
+    });
+
+    handleSetDisplayTaskList([...getAllTasks()]);
   };
 
   const changeTaskListCallback = () => {
-    setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
+    handleSetDisplayTaskList(handleFilterTasks());
   };
 
   return (

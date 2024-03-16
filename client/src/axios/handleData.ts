@@ -37,9 +37,6 @@ export const removeTask = (taskToDelete: iTask): iTask[] => {
         taskList.splice(taskIndex, 1);
     }
 
-    console.log(taskList);
-
-    // return taskList.length ? taskList : [];
     return taskList
 };
 
@@ -62,7 +59,8 @@ export const getTaskAllHierarchy = (currentTask: iTask): iTask[] => {
     return allHierarchy
 }
 
-const getTaskDownHierarchy = (currentTask: iTask): iTask[] => {
+// return all the tasks down generations including the task itself
+export const getTaskDownHierarchy = (currentTask: iTask): iTask[] => {
     const downHierarchy: iTask[] = []
     const taskChildren: iTask[] = getTaskChildern(currentTask)
 
@@ -75,6 +73,7 @@ const getTaskDownHierarchy = (currentTask: iTask): iTask[] => {
     return downHierarchy
 }
 
+// return all the task up generations including the task itself
 const getTaskUpHierarchy = (currentTask: iTask | undefined): iTask[] => {
     if (currentTask === undefined) return []
     if (currentTask.parentId === undefined) return [currentTask]
