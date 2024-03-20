@@ -11,14 +11,13 @@ const DropdownFilter: React.FC<iDropdownFilterProps> = ({
   handleClickItem,
   possibleStates,
 }: iDropdownFilterProps) => {
+  const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    handleClickItem(event.target.value);
+  };
+
   return (
     <div className="filter">
-      <select
-        onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-          handleClickItem(event.target.value)
-        }
-        value={currentFilter}
-      >
+      <select onChange={handleOnChange} value={currentFilter}>
         {possibleStates.map((value) => (
           <option key={value} value={value}>
             {value}
