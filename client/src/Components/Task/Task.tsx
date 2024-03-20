@@ -4,9 +4,12 @@ import pencilIcon from "./pencil.svg";
 import trashIcon from "./trash.svg";
 import TaskModal from "./TaskModal";
 import { iTask } from "../../CommonInterfaces/Task";
+import { editExistingTask } from "../../axios/handleData";
+import { TaskWithTheSameNameExists } from "../../axios/Errors";
 
 interface iTaskProps extends iTask {
   onRemoveTask: (task: iTask) => void;
+  onEditCallback?: () => void;
 }
 
 const Task: React.FC<iTaskProps> = ({
@@ -14,12 +17,14 @@ const Task: React.FC<iTaskProps> = ({
   description,
   status,
   onRemoveTask,
+  onEditCallback = () => {},
 }: iTaskProps) => {
   const [isExpended, setExpended] = useState<boolean>(false);
   const [isEditTask, setEditTask] = useState<boolean>(false);
   const [isHover, setIsHover] = useState<boolean>(false);
 
   const editModalTitle = `עריכת ${description}`;
+
   const currentTask: iTask = {
     id,
     description,
@@ -33,13 +38,9 @@ const Task: React.FC<iTaskProps> = ({
   const handleMouseOnEnter = () => {
     setIsHover(true);
   };
-
+  
   const handleExpandClick = () => {
     setExpended((prevState: boolean) => !prevState);
-  };
-
-  const handleRemoveTask = () => {
-    onRemoveTask(currentTask);
   };
 
   const openEditTaskModal = () => {
@@ -50,7 +51,23 @@ const Task: React.FC<iTaskProps> = ({
     setEditTask(false);
   };
 
-  const handleSaveEditModal = (task: iTask) => {};
+  const handleSaveEditModal = (editedTask: iTask) => {
+    try {
+      editExistingTask(editedTask);
+      closeEditTaskModal();
+      onEditCallback();
+    } catch (err) {
+      if (err instanceof TaskWithTheSameNameExists) {
+        alert(err.message);
+      } else {
+        console.log(err);
+      }
+    }
+  };
+    
+  const handleRemoveTask = () => {
+    onRemoveTask(currentTask);
+  };
 
   return (
     <>
@@ -75,9 +92,8 @@ const Task: React.FC<iTaskProps> = ({
       </div>
       {isEditTask && (
         <TaskModal
-          onClose={closeEditTaskModal}
-          onSave={handleSaveEditModal}
-          showModal={isEditTask}
+          handleOnClose={closeEditTaskModal}
+          onSaveTask={handleSaveEditModal}
           title={editModalTitle}
           givenTask={currentTask}
         />

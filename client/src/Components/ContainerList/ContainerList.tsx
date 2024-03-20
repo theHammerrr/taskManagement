@@ -10,6 +10,7 @@ import {
   eTaskStatusFilter,
   eTaskStatusFilterAll,
 } from "../../CommonInterfaces/FilterTasks";
+import NewTaskButton from "../newTask/NewTaskButton";
 
 const ContainerList: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<eTaskStatusFilter>(
@@ -50,7 +51,12 @@ const ContainerList: React.FC = () => {
   };
 
   const handleRemoveTask = (task: iTask) => {
-    setDisplayTaskList(removeTask(task));
+    const newList = removeTask(task);
+    setDisplayTaskList([...newList]);
+  };
+
+  const changeTaskListCallback = () => {
+    setDisplayTaskList(filterTasks({ textFilter, statusFilter }));
   };
 
   return (
@@ -73,8 +79,12 @@ const ContainerList: React.FC = () => {
           key={currentTask.id}
           {...currentTask}
           onRemoveTask={handleRemoveTask}
+          onEditCallback={changeTaskListCallback}
         />
       ))}
+      <div className="new-task-button">
+        <NewTaskButton onSaveCallback={changeTaskListCallback} />
+      </div>
     </div>
   );
 };
