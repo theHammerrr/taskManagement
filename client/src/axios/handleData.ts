@@ -34,9 +34,6 @@ export const removeTask = (taskToDelete: iTask): iTask[] => {
         taskList.splice(taskIndex, 1);
     }
 
-    console.log(taskList);
-
-    // return taskList.length ? taskList : [];
     return taskList
 };
 
