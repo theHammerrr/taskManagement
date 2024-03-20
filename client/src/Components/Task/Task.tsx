@@ -14,7 +14,7 @@ interface iTaskProps extends iTask {
 
 const Task: React.FC<iTaskProps> = ({
   id,
-  description: discription,
+  description,
   status,
   onRemoveTask,
   onEditCallback = () => {},
@@ -23,13 +23,22 @@ const Task: React.FC<iTaskProps> = ({
   const [isEditTask, setEditTask] = useState<boolean>(false);
   const [isHover, setIsHover] = useState<boolean>(false);
 
-  const editModalTitle = `עריכת ${discription}`;
+  const editModalTitle = `עריכת ${description}`;
+
   const currentTask: iTask = {
     id,
-    description: discription,
+    description,
     status,
   };
 
+  const handleMouseOnLeave = () => {
+    setIsHover(false);
+  };
+
+  const handleMouseOnEnter = () => {
+    setIsHover(true);
+  };
+  
   const handleExpandClick = () => {
     setExpended((prevState: boolean) => !prevState);
   };
@@ -55,25 +64,29 @@ const Task: React.FC<iTaskProps> = ({
       }
     }
   };
+    
+  const handleRemoveTask = () => {
+    onRemoveTask(currentTask);
+  };
 
   return (
     <>
       <div
         className="task"
-        onMouseEnter={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}
+        onMouseEnter={handleMouseOnEnter}
+        onMouseLeave={handleMouseOnLeave}
       >
         <div className="task-start">
           <button className="expend-button" onClick={handleExpandClick}>
             <div className={isExpended ? "arrow-up-task" : "arrow-down-task"} />
           </button>
-          <span>{discription}</span>
+          <span>{description}</span>
         </div>
         <div className="task-status">{status}</div>
         {isHover && (
           <div className="task-icons">
             <img src={pencilIcon} onClick={openEditTaskModal} />
-            <img src={trashIcon} onClick={() => onRemoveTask(currentTask)} />
+            <img src={trashIcon} onClick={handleRemoveTask} />
           </div>
         )}
       </div>

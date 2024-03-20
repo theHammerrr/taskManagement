@@ -4,7 +4,6 @@ import { iTask } from "../../CommonInterfaces/Task";
 import "./TaskModal.css";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import {
-  getAllTasks,
   findTaskWithDescription,
   findTaskWithId,
   findPossibleParents,
@@ -39,6 +38,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   const possibleParents: string[] = [UNLINK_TASK_TEXT];
   possibleParents.push(
     ...findPossibleParents(currentTask).map((task) => task.description)
+
   );
 
   type taskProperties = keyof iTask;
@@ -56,6 +56,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   const handleSave = () => {
     const newParentId = currentParent?.id ?? undefined;
     onSaveTask({ ...currentTask, parentId: newParentId });
+
   };
 
   const handleDescriptionChange = (

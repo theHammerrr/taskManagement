@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-
-// TODO: Add first option for first state when nothing is selected yet.
+import React from "react";
 
 interface iDropdownFilterProps {
   currentFilter: string | undefined;
