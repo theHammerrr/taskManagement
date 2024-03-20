@@ -1,5 +1,5 @@
 .ContainerList {
-    background-color: lightgray;
+    background-color: #e7e6e6;
     width: 80%;
     min-height: 300px;
     display: flex;
@@ -15,40 +15,10 @@
     margin: 1%;
 }
 
-
-.filterDropdown {
-    width: 20%;
-    height: 30px;
+.filter-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
     margin-bottom: 1%;
-}
-
-.dropdownButton {
-    /* width: 20%; */
-    height: 100%;
-    border: none;
-    gap: 20px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-
-.arrow-down {
-    height: 0;
-    width: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-top: 14px solid #333;
-}
-
-.arrow-up {
-    height: 0;
-    width: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-bottom: 14px solid #333;
 }

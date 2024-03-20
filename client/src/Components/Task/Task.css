@@ -1,7 +1,6 @@
 .task {
     display: flex;
     flex-direction: row;
-    /* background-color: rgb(65, 65, 65); */
     background-color: var(--inner-color);
     color: white;
     margin: 1%;
@@ -10,11 +9,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 5px;
-    --icons-opacity: 0;
-}
-
-.task:hover {
-    --icons-opacity: 1;
+    position: relative;
 }
 
 
@@ -53,9 +48,10 @@
 .task-status {
     background-color: black;
     position: absolute;
-    left: 30%;
+    left: 15%;
     text-align: center;
-    width: 80px;
+    width: 10%;
+    min-width: 100px;
 }
 
 .task-icons {
@@ -63,5 +59,8 @@
     left: 1%;
     display: flex;
     gap: 10px;
-    opacity: var(--icons-opacity);
+}
+
+.task-icons img {
+    cursor: pointer;
 }

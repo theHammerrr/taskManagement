@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import NavBar from './Components/NavBar/NavBar';
 import ContainerList from './Components/ContainerList/ContainerList';
-import NewTask from './Components/newTask/NewTask';
+import NewTaskButton from './Components/newTask/NewTaskButton';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <NavBar />
       <ContainerList />
       <div className='new-task-button'>
-        <NewTask />
+        <NewTaskButton />
       </div>
     </div>
   );

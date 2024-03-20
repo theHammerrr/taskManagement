@@ -1,54 +1,30 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import './Modal.css'
-import {
-    ModalComponent,
-    eContentTypesInModal,
-    iModalInputProps,
-    iModalGenericContentProps
-} from "./ModalContentTypes";
 
-interface iTaskModal {
-    onClose: () => void,
+export interface iModalProps extends React.PropsWithChildren {
     showModal: boolean,
     title: string,
-    contentTypesArray: iModalGenericContentProps[]
+    children?: ReactElement
 }
 
 
-const Modal: React.FC = ({
-    onClose,
+const Modal: React.FC<iModalProps> = ({
     showModal = false,
     title,
-    contentTypesArray = []
-}: iTaskModal) => {
-    // console.log(contentTypesArray);
-    
-
+    children
+}: iModalProps) => {
     return (
-        <div className={(showModal ? "show-modal" : "hide-modal") + " modal"}>
-            <div className="modal-content">
-                <div className="title">{title}</div>
-                {/* <ModalComponent type={eContentTypesInModal.INPUT} iModalInputProps={{title: "asd"}} > */}
-                {/* <ModalComponent contentType={eContentTypesInModal.INPUT} modalContent={modalInputProps}> */}
-                {/* asd */}
-                {/* </ModalComponent> */}
-                {/* <>
-                    ${getModalComponent(eContentTypesInModal.INPUT, modalInputProps)}
-                </> */}
-                {
-                    contentTypesArray.forEach((genericContent) => 
-                            <ModalComponent
-                                contentType={eContentTypesInModal.INPUT}
-                                // modalContent={genericContent.modalContent}
-                                 />
-                        
-                    )
-                }
-                {/* <ModalComponent contentType={eContentTypesInModal.INPUT} ></ModalComponent> */}
-
-                <button className="close" onClick={onClose}>&times;</button>
-            </div>
-        </div>
+        <>
+            {
+                showModal &&
+                <div className={"modal-overlay"}>
+                    <div className="modal-content">
+                        <span className="title">{title}</span>
+                        {children}
+                    </div>
+                </div>
+            }
+        </>
     )
 }
 
