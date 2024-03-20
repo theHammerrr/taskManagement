@@ -1,6 +1,6 @@
 import { iTask } from "../CommonInterfaces/Task";
 import taskList from "./tempData";
-import { eTaskStatusFilterAll, iFilterTasks } from "../CommonInterfaces/FilterTasks";
+import { eTaskStatusFilter, eTaskStatusFilterAll, iFilterTasks } from "../CommonInterfaces/FilterTasks";
 import { TaskDoesNotExists, TaskWithTheSameNameExists } from "./Errors";
 
 let counter = taskList.length // only goes up
@@ -14,9 +14,9 @@ export const getAllTasks = (): iTask[] => {
     return taskList;
 };
 
-export const getAllParentsTasks = (): iTask[] => {
-    return taskList.filter(task => task.parentId === undefined)
-}
+// export const getAllParentsTasks = (): iTask[] => {
+//     return taskList.filter(task => task.parentId === undefined)
+// }
 
 export const findTaskWithId = (
     taskId: number | undefined
@@ -45,6 +45,7 @@ export const filterTasks = (filterData: iFilterTasks): iTask[] => {
     const filteredTasks = taskList.filter((currentTask) =>
         currentTask.description.includes(filterData.textFilter) &&
         (filterData.statusFilter === eTaskStatusFilterAll.ALL || currentTask.status === filterData.statusFilter))
+
 
     return filteredTasks
 }
@@ -78,13 +79,7 @@ const getTaskUpHierarchy = (currentTask: iTask | undefined): iTask[] => {
     if (currentTask === undefined) return []
     if (currentTask.parentId === undefined) return [currentTask]
 
-    // const parentTask = findTaskWithId(currentTask?.parentId)
-    // console.log(parentTask);
-
     const upHierarchy = [currentTask, ...getTaskUpHierarchy(findTaskWithId(currentTask?.parentId))]
-    // console.log("up");
-    // console.log(upHierarchy);
-
     return upHierarchy
 }
 
@@ -140,4 +135,28 @@ export const getTaskChildern = (parentTask: iTask): iTask[] => {
 
 export const isTaskWithChildren = (parentTask: iTask): boolean => {
     return taskList.find(task => task.parentId === parentTask.id) ? true : false
+}
+
+export const getTasklistRootParents = (tasks: iTask[] = taskList) => {
+    if (tasks == taskList) {
+        return tasks.filter(task => task.parentId === undefined)
+    }
+
+    const tasksUpHierarchy: iTask[] = []
+    tasks.map((currentTask: iTask) => tasksUpHierarchy.push(...getTaskUpHierarchy(currentTask)))
+    console.log(tasksUpHierarchy);
+
+
+    const rootParents = tasksUpHierarchy.filter(task => task.parentId === undefined)
+    return removeDuplicatesTasks(rootParents)
+}
+
+const removeDuplicatesTasks = (tasks: iTask[]): iTask[] => {
+    const seen = new Set();
+
+    return tasks.filter((task: iTask) => {
+        const duplicate = seen.has(task.id);
+        seen.add(task.id);
+        return !duplicate;
+    });
 }

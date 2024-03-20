@@ -6,8 +6,7 @@ import {
   getAllTasks,
   removeTask,
   filterTasks,
-  getAllParentsTasks,
-  getTaskChildern,
+  getTasklistRootParents,
   getTaskDownHierarchy,
 } from "../../axios/handleData";
 import { useDebounce } from "../../helpers/debounce";
@@ -33,7 +32,7 @@ const ContainerList: React.FC = () => {
   ];
 
   const handleSetDisplayTaskList = (newList: iTask[]) => {
-    setDisplayTaskList(newList.filter((task) => task.parentId === undefined));
+    setDisplayTaskList(getTasklistRootParents(newList));
   };
 
   const handleFilterTasks = (): iTask[] => {
@@ -41,16 +40,17 @@ const ContainerList: React.FC = () => {
   };
 
   useEffect(() => {
-    setDisplayTaskList(getAllParentsTasks());
+    setDisplayTaskList(getTasklistRootParents());
   }, []);
 
-  //TODO: fix filtering for a child task
   const searchTextDebounce = useDebounce(() => {
     handleSetDisplayTaskList(handleFilterTasks());
   }, 300);
 
   useEffect(() => {
-    searchTextDebounce();
+    textFilter === ""
+      ? setDisplayTaskList(getTasklistRootParents())
+      : searchTextDebounce();
   }, [textFilter]);
 
   const handleTextFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
