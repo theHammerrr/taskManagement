@@ -31,9 +31,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   onSaveTask,
   givenTask,
 }) => {
-  const [currentTask, setTask] = useState<iTask>(
-    givenTask ? givenTask : demoTask
-  );
+  const [currentTask, setTask] = useState<iTask>(givenTask ?? demoTask);
   const [currentParent, setCurrentParent] = useState<iTask | undefined>(
     findTaskWithId(currentTask.parentId)
   );
@@ -51,34 +49,24 @@ const TaskModal: React.FC<TaskModalProps> = ({
     });
   };
 
-  const handleLinkTaskToParent = (parentDiscription: string) => {
-    if (parentDiscription === UNLINK_TASK_TEXT) {
-      const { parentId: _, ...orphanTask }: iTask = currentTask;
-      setTask({
-        ...orphanTask,
-      });
-      return;
-    }
-
-    const currentParent = findTaskWithId(currentTask.parentId);
-
-    if (currentParent && currentParent.description !== parentDiscription) {
-      const newParent = findTaskWithDescription(parentDiscription);
-      if (newParent) handleChangeTask<number>(newParent?.id, "parentId");
-    }
+  const handleChangeParentDropdown = (parentDescription: string) => {
+    setCurrentParent(findTaskWithDescription(parentDescription));
   };
 
   const handleSave = () => {
-    onSaveTask(currentTask);
+    const newParentId = currentParent?.id ?? undefined;
+    onSaveTask({ ...currentTask, parentId: newParentId });
   };
 
-  useEffect(() => {
-    if (currentTask.parentId) {
-      setCurrentParent(findTaskWithId(currentTask.parentId));
-    } else {
-      setCurrentParent(undefined);
-    }
-  }, [currentTask.parentId]);
+  const handleDescriptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    handleChangeTask<string>(event.currentTarget.value, "description");
+  };
+
+  const handleDropdownChange = (status: string) => {
+    handleChangeTask<eTaskStatus>(status as eTaskStatus, "status");
+  };
 
   return (
     <Modal handleOnClose={handleOnClose} handleOnSave={handleSave}>
@@ -90,33 +78,22 @@ const TaskModal: React.FC<TaskModalProps> = ({
             className="input"
             value={currentTask.description}
             placeholder="שם..."
-            onChange={(event) => {
-              handleChangeTask<string>(
-                event.currentTarget.value,
-                "description"
-              );
-            }}
+            onChange={handleDescriptionChange}
           />
         </div>
         <div className="dropdown-status">
           <span>סטטוס:</span>
           <DropdownFilter
             currentFilter={currentTask.status}
-            handleClickItem={(status) =>
-              handleChangeTask<eTaskStatus>(status as eTaskStatus, "status")
-            }
+            handleClickItem={handleDropdownChange}
             possibleStates={Object.values(eTaskStatus)}
           />
         </div>
         <div className="dropdown-lint-task">
           <span>קישור למשימה:</span>
           <DropdownFilter
-            currentFilter={
-              currentParent ? currentParent.description : UNLINK_TASK_TEXT
-            }
-            handleClickItem={(parentDiscription) =>
-              handleLinkTaskToParent(parentDiscription)
-            }
+            currentFilter={currentParent?.description ?? UNLINK_TASK_TEXT}
+            handleClickItem={handleChangeParentDropdown}
             possibleStates={possibleParents}
           />
         </div>
