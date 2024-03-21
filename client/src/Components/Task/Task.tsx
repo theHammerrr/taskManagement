@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Task.css";
 import pencilIcon from "./pencil.svg";
 import trashIcon from "./trash.svg";
@@ -74,10 +74,6 @@ const Task: React.FC<iTaskProps> = ({
       }
     }
   };
-
-  // useEffect(() => {
-  //   setHasChildren(isTaskWithChildren(currentTask));
-  // }, []);
 
   return (
     <>
