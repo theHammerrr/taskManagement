@@ -1,7 +1,21 @@
 import { iTask } from "../CommonInterfaces/Task";
-import taskList from "./tempData";
-import { eTaskStatusFilter, eTaskStatusFilterAll, iFilterTasks } from "../CommonInterfaces/FilterTasks";
+import taskListJson from "./tempData";
+import { eTaskStatusFilterAll, iFilterTasks } from "../CommonInterfaces/FilterTasks";
 import { TaskDoesNotExists, TaskWithTheSameNameExists } from "./Errors";
+
+const TASKS_LOCALSTORAGE_KEY = "tasks"
+
+const getTasksFromLocalstorage = (): iTask[] => {
+    const tasks = localStorage.getItem(TASKS_LOCALSTORAGE_KEY)
+    if (tasks) return JSON.parse(tasks)
+    else return taskListJson
+}
+
+const setTasksToLocalstorage = (tasks: iTask[]) => {
+    localStorage.setItem(TASKS_LOCALSTORAGE_KEY, JSON.stringify(tasks))
+}
+
+const taskList = getTasksFromLocalstorage()
 
 let counter = taskList.length // only goes up
 const generateId = () => {
@@ -10,13 +24,10 @@ const generateId = () => {
 }
 
 
+
 export const getAllTasks = (): iTask[] => {
     return taskList;
 };
-
-// export const getAllParentsTasks = (): iTask[] => {
-//     return taskList.filter(task => task.parentId === undefined)
-// }
 
 export const findTaskWithId = (
     taskId: number | undefined
@@ -36,6 +47,8 @@ export const removeTask = (taskToDelete: iTask): iTask[] => {
     if (taskIndex != -1) {
         taskList.splice(taskIndex, 1);
     }
+
+    setTasksToLocalstorage(taskList)
 
     return taskList
 };
@@ -105,6 +118,8 @@ export const addNewTask = (newTask: iTask) => {
         id: newId
     })
 
+    setTasksToLocalstorage(taskList)
+
     return taskList
 }
 
@@ -127,6 +142,7 @@ export const editExistingTask = (editedTask: iTask) => {
     taskList[taskIndex] = {
         ...editedTask,
     }
+    setTasksToLocalstorage(taskList)
 }
 
 export const getTaskChildern = (parentTask: iTask): iTask[] => {
