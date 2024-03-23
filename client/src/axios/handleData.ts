@@ -97,7 +97,7 @@ const getTaskUpHierarchy = (currentTask: iTask | undefined): iTask[] => {
 }
 
 export const findPossibleParents = (currentTask: iTask) => {
-    const allHierarchy = getTaskAllHierarchy(currentTask).map(task => task.id);
+    const allHierarchy = getTaskDownHierarchy(currentTask).map(task => task.id);
 
     return taskList.filter((task: iTask) =>
         // task.id !== currentTask.parentId
