@@ -19,7 +19,7 @@ const DropdownFilter: React.FC<iDropdownFilterProps> = ({
   return (
     <div>
       <select
-        className="filter"
+        className="dropdown-select"
         onChange={handleOnChange}
         value={currentFilter}
       >
