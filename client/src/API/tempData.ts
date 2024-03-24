@@ -1,5 +1,4 @@
-import { eTaskStatus } from "../CommonInterfaces/TaskStatus";
-import { iTask } from "../CommonInterfaces/Task";
+import { eTaskStatus, iTask } from "../CommonInterfaces/Task";
 
 const taskList: iTask[] = [
   {

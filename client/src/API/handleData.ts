@@ -1,7 +1,6 @@
 import { iTask } from "../CommonInterfaces/Task";
 import taskListJson from "./tempData";
 import { eTaskStatusFilterAll, iFilterTasks } from "../CommonInterfaces/FilterTasks";
-import { TaskDoesNotExists, TaskWithTheSameNameExists } from "./Errors";
 
 const TASKS_LOCALSTORAGE_KEY = "tasks"
 
@@ -55,12 +54,9 @@ export const removeTask = (taskToDelete: iTask): iTask[] => {
 
 
 export const filterTasks = (filterData: iFilterTasks): iTask[] => {
-    const filteredTasks = taskList.filter((currentTask) =>
+    return taskList.filter((currentTask) =>
         currentTask.description.includes(filterData.textFilter) &&
         (filterData.statusFilter === eTaskStatusFilterAll.ALL || currentTask.status === filterData.statusFilter))
-
-
-    return filteredTasks
 }
 
 // returns all the parents and children of the given task. the given task is included.
@@ -108,7 +104,7 @@ export const addNewTask = (newTask: iTask) => {
     const isTaskDescriptionExists = findTaskWithDescription(newTask.description) ? true : false
 
     if (isTaskDescriptionExists) {
-        throw new TaskWithTheSameNameExists()
+        throw new Error("there is another task with the same description")
     }
 
     const newId = generateId()
@@ -129,18 +125,19 @@ export const editExistingTask = (editedTask: iTask) => {
             task.id !== editedTask.id) ? true : false
 
     if (isOtherTaskWithSameDescription) {
-        throw new TaskWithTheSameNameExists()
+        throw new Error("there is another task with the same description")
     }
 
     const taskIndex = taskList.findIndex(task => task.id === editedTask.id)
 
     if (taskIndex === -1) {
-        throw new TaskDoesNotExists()
+        throw new Error("task does not exists")
     }
 
     taskList[taskIndex] = {
         ...editedTask,
     }
+
     setTasksToLocalstorage(taskList)
 }
 
@@ -152,15 +149,13 @@ export const isTaskWithChildren = (parentTask: iTask): boolean => {
     return taskList.find(task => task.parentId === parentTask.id) ? true : false
 }
 
-export const getTasklistRootParents = (tasks: iTask[] = taskList) => {
-    if (tasks == taskList) {
-        return tasks.filter(task => task.parentId === undefined)
-    }
+export const initTaskListRootParents = () => {
+    return taskList.filter(task => task.parentId === undefined)
+}
 
+export const getTaskListRootParents = (tasks: iTask[] = taskList) => {
     const tasksUpHierarchy: iTask[] = []
     tasks.map((currentTask: iTask) => tasksUpHierarchy.push(...getTaskUpHierarchy(currentTask)))
-    console.log(tasksUpHierarchy);
-
 
     const rootParents = tasksUpHierarchy.filter(task => task.parentId === undefined)
     return removeDuplicatesTasks(rootParents)

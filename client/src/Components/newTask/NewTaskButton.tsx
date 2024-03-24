@@ -3,16 +3,13 @@ import newTaskIcon from "./newTask.svg";
 import TaskModal from "../Task/TaskModal";
 import "./NewTaskButton.css";
 import { iTask } from "../../CommonInterfaces/Task";
-import { addNewTask } from "../../axios/handleData";
-import { TaskWithTheSameNameExists } from "../../axios/Errors";
+import { addNewTask } from "../../API/handleData";
 
 interface iNewTaskButtonProps {
   onSaveCallback?: () => void;
 }
 
-const NewTaskButton: React.FC<iNewTaskButtonProps> = ({
-  onSaveCallback = () => {},
-}) => {
+const NewTaskButton: React.FC<iNewTaskButtonProps> = ({ onSaveCallback }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const modalTitle = "יצירת משימה";
 
@@ -28,13 +25,9 @@ const NewTaskButton: React.FC<iNewTaskButtonProps> = ({
     try {
       addNewTask(newTask);
       handleCloseModal();
-      onSaveCallback();
+      onSaveCallback?.();
     } catch (err) {
-      if (err instanceof TaskWithTheSameNameExists) {
-        alert(err.message);
-      } else {
-        console.log(err);
-      }
+      alert((err as Error).message);
     }
   };
 

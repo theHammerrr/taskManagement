@@ -1,4 +1,4 @@
-import { eTaskStatus } from "./TaskStatus"
+import { eTaskStatus } from "./Task"
 
 export enum eTaskStatusFilterAll {
     ALL = "הכל"

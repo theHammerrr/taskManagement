@@ -1,22 +1,31 @@
 import React, { useEffect, useState } from "react";
-import "./ContainerList.css";
-import Task from "../Task/Task";
-import DropdownFilter from "../DropdownFilter/DropdownFilter";
-import {
-  getAllTasks,
-  removeTask,
-  filterTasks,
-  getTasklistRootParents,
-  getTaskDownHierarchy,
-} from "../../axios/handleData";
-import { useDebounce } from "../../helpers/debounce";
-import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
-import { iTask } from "../../CommonInterfaces/Task";
 import {
   eTaskStatusFilter,
   eTaskStatusFilterAll,
 } from "../../CommonInterfaces/FilterTasks";
+import { iTask } from "../../CommonInterfaces/Task";
+import { eTaskStatus } from "../../CommonInterfaces/Task";
+import {
+  filterTasks,
+  getAllTasks,
+  getTaskDownHierarchy,
+  getTaskListRootParents,
+  initTaskListRootParents,
+  removeTask,
+} from "../../API/handleData";
+import { useDebounce } from "../../helpers/debounce";
+import DropdownFilter from "../DropdownFilter/DropdownFilter";
+import Task from "../Task/Task";
 import NewTaskButton from "../newTask/NewTaskButton";
+import "./ContainerList.css";
+
+const possibleStates = [
+  eTaskStatusFilterAll.ALL,
+  ...Object.values(eTaskStatus),
+];
+
+const STATUS_FILTER_TEXT = "סינון לפי:";
+const NAME_FILTER_TEXT = "חפש לפי שם";
 
 const ContainerList: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<eTaskStatusFilter>(
@@ -24,46 +33,36 @@ const ContainerList: React.FC = () => {
   );
 
   const [textFilter, setTextFilter] = useState<string>("");
-  const [displayTaskList, setDisplayTaskList] = useState<iTask[]>([]);
-
-  const possibleStates = [
-    eTaskStatusFilterAll.ALL,
-    ...Object.values(eTaskStatus),
-  ];
+  const [displayTaskList, setDisplayTaskList] = useState<iTask[]>(
+    initTaskListRootParents()
+  );
 
   const handleSetDisplayTaskList = (newList: iTask[]) => {
-    setDisplayTaskList(getTasklistRootParents(newList));
+    setDisplayTaskList(getTaskListRootParents(newList));
   };
 
   const handleFilterTasks = (): iTask[] => {
     return filterTasks({ textFilter, statusFilter });
   };
 
-  useEffect(() => {
-    setDisplayTaskList(getTasklistRootParents());
-  }, []);
-
   const searchTextDebounce = useDebounce(() => {
     handleSetDisplayTaskList(handleFilterTasks());
   }, 300);
 
   useEffect(() => {
-    textFilter === ""
-      ? setDisplayTaskList(getTasklistRootParents())
-      : searchTextDebounce();
+    searchTextDebounce();
   }, [textFilter]);
 
   const handleTextFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     setTextFilter(e.currentTarget.value);
   };
 
-  const handleChangeFilter = (value: string) => {
-    if (value === statusFilter) return;
+  useEffect(() => {
+    handleSetDisplayTaskList(handleFilterTasks());
+  }, [statusFilter]);
 
+  const handleChangeFilter = (value: string) => {
     setStatusFilter(value as eTaskStatusFilter);
-    handleSetDisplayTaskList(
-      filterTasks({ textFilter, statusFilter: value as eTaskStatusFilter })
-    );
   };
 
   const handleRemoveTask = (task: iTask) => {
@@ -72,7 +71,7 @@ const ContainerList: React.FC = () => {
       removeTask(task);
     });
 
-    handleSetDisplayTaskList([...getAllTasks()]);
+    handleSetDisplayTaskList(handleFilterTasks());
   };
 
   const changeTaskListCallback = () => {
@@ -85,9 +84,10 @@ const ContainerList: React.FC = () => {
         type="text"
         className="SearchList"
         onChange={handleTextFilterChange}
+        placeholder={NAME_FILTER_TEXT}
       />
       <div className="filter-container">
-        <span>סינון לפי:</span>
+        <span>{STATUS_FILTER_TEXT}</span>
         <DropdownFilter
           currentFilter={statusFilter}
           handleClickItem={handleChangeFilter}
@@ -98,7 +98,7 @@ const ContainerList: React.FC = () => {
         {displayTaskList.map((currentTask: iTask) => (
           <Task
             key={currentTask.id}
-            {...currentTask}
+            currentTask={currentTask}
             onRemoveTask={handleRemoveTask}
             onEditCallback={changeTaskListCallback}
           />

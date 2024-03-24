@@ -4,6 +4,7 @@
     border-radius: 50%;
     background-color: var(--inner-color);
     border: none;
+    cursor: pointer;
 }
 
 .modal-button:hover {

@@ -1,4 +1,7 @@
-import { eTaskStatus } from "./TaskStatus";
+export enum eTaskStatus {
+    ACTIVE = 'פעיל',
+    COMPLETED = 'הושלם'
+}
 
 export interface iTask {
     id: number,
@@ -6,3 +9,5 @@ export interface iTask {
     status: eTaskStatus,
     parentId?: number,
 }
+
+export const taskPossibleStates = Object.values(eTaskStatus)

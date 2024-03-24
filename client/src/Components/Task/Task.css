@@ -12,7 +12,7 @@
 }
 
 .child-task {
-    width: 98%;
+    width: calc(100% - 30px);;
     display: flex;
     align-self: flex-end;
     flex-direction: column;
@@ -27,19 +27,17 @@
     margin-right: 1%;
 }
 
+.arrow {
+    cursor: pointer;
+}
+
 .arrow-down-task {
-    margin: 1%;
-    height: 0;
-    width: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-top: 16px solid white;
 }
 
 .arrow-up-task {
-    margin: 1%;
-    height: 0;
-    width: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-bottom: 16px solid white;

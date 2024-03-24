@@ -1,4 +1,5 @@
 import React from "react";
+import "./DropdownFilter.css";
 
 interface iDropdownFilterProps {
   currentFilter: string | undefined;
@@ -16,8 +17,12 @@ const DropdownFilter: React.FC<iDropdownFilterProps> = ({
   };
 
   return (
-    <div className="filter">
-      <select onChange={handleOnChange} value={currentFilter}>
+    <div>
+      <select
+        className="filter"
+        onChange={handleOnChange}
+        value={currentFilter}
+      >
         {possibleStates.map((value) => (
           <option key={value} value={value}>
             {value}

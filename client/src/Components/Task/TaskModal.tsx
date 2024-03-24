@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import Modal, { iModalProps } from "../Modal/Modal";
-import { iTask } from "../../CommonInterfaces/Task";
-import "./TaskModal.css";
-import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import {
-  getAllTasks,
+  eTaskStatus,
+  iTask,
+  taskPossibleStates,
+} from "../../CommonInterfaces/Task";
+import {
+  findPossibleParents,
   findTaskWithDescription,
   findTaskWithId,
-  findPossibleParents,
-} from "../../axios/handleData";
-import { eTaskStatus } from "../../CommonInterfaces/TaskStatus";
+} from "../../API/handleData";
+import DropdownFilter from "../DropdownFilter/DropdownFilter";
+import Modal, { iModalProps } from "../Modal/Modal";
+import "./TaskModal.css";
 
 interface TaskModalProps extends Omit<iModalProps, "handleOnSave"> {
   givenTask?: iTask;
@@ -24,6 +26,10 @@ const demoTask = {
 };
 
 const UNLINK_TASK_TEXT: string = "בטל קישור למטרה";
+const STATUS_TEXT = "סטטוס:";
+const NAME_TEXT = "שם:";
+const NAME_PLACEHOLDER = "שם...";
+const LINK_TEXT = "קישור למשימה:";
 
 const TaskModal: React.FC<TaskModalProps> = ({
   handleOnClose,
@@ -31,19 +37,23 @@ const TaskModal: React.FC<TaskModalProps> = ({
   onSaveTask,
   givenTask,
 }) => {
-  const [currentTask, setTask] = useState<iTask>(givenTask ?? demoTask);
+  const [currentTask, setCurrentTask] = useState<iTask>(givenTask || demoTask);
   const [currentParent, setCurrentParent] = useState<iTask | undefined>(
     findTaskWithId(currentTask.parentId)
   );
+  const [possibleParents, setPossibleParents] = useState<string[]>([
+    UNLINK_TASK_TEXT,
+  ]);
 
-  const possibleParents: string[] = [UNLINK_TASK_TEXT];
-  possibleParents.push(
-    ...findPossibleParents(currentTask).map((task) => task.description)
-  );
+  useEffect(() => {
+    setPossibleParents([
+      UNLINK_TASK_TEXT,
+      ...findPossibleParents(currentTask).map((task) => task.description),
+    ]);
+  }, []);
 
-  type taskProperties = keyof iTask;
-  const handleChangeTask = <T,>(value: T, property: taskProperties) => {
-    setTask({
+  const handleChangeTask = <T,>(value: T, property: keyof iTask) => {
+    setCurrentTask({
       ...currentTask,
       [property]: value,
     });
@@ -54,8 +64,11 @@ const TaskModal: React.FC<TaskModalProps> = ({
   };
 
   const handleSave = () => {
-    const newParentId = currentParent?.id ?? undefined;
-    onSaveTask({ ...currentTask, parentId: newParentId });
+    if (currentTask.description.trim() === "") {
+      alert("Can not save while description is empty");
+    } else {
+      onSaveTask({ ...currentTask, parentId: currentParent?.id });
+    }
   };
 
   const handleDescriptionChange = (
@@ -73,26 +86,26 @@ const TaskModal: React.FC<TaskModalProps> = ({
       <div className="modal-children">
         <span className="title">{title}</span>
         <div className="input-container">
-          <span>שם:</span>
+          <span>{NAME_TEXT}</span>
           <input
             className="input"
             value={currentTask.description}
-            placeholder="שם..."
+            placeholder={NAME_PLACEHOLDER}
             onChange={handleDescriptionChange}
           />
         </div>
         <div className="dropdown-status">
-          <span>סטטוס:</span>
+          <span>{STATUS_TEXT}</span>
           <DropdownFilter
             currentFilter={currentTask.status}
             handleClickItem={handleDropdownChange}
-            possibleStates={Object.values(eTaskStatus)}
+            possibleStates={taskPossibleStates}
           />
         </div>
         <div className="dropdown-lint-task">
-          <span>קישור למשימה:</span>
+          <span>{LINK_TEXT}</span>
           <DropdownFilter
-            currentFilter={currentParent?.description ?? UNLINK_TASK_TEXT}
+            currentFilter={currentParent?.description || UNLINK_TASK_TEXT}
             handleClickItem={handleChangeParentDropdown}
             possibleStates={possibleParents}
           />
