@@ -18,6 +18,7 @@ import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import Task from "../Task/Task";
 import NewTaskButton from "../newTask/NewTaskButton";
 import "./ContainerList.css";
+import { useTasksContext } from "../Contexts/TasksProvider";
 
 const possibleStates = [
   eTaskStatusFilterAll.ALL,
@@ -28,6 +29,9 @@ const STATUS_FILTER_TEXT = "סינון לפי:";
 const NAME_FILTER_TEXT = "חפש לפי שם";
 
 const ContainerList: React.FC = () => {
+  const tasksContext = useTasksContext();
+  console.log(tasksContext);
+
   const [statusFilter, setStatusFilter] = useState<eTaskStatusFilter>(
     eTaskStatusFilterAll.ALL
   );
