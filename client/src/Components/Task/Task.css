@@ -12,7 +12,7 @@
 }
 
 .child-task {
-    width: calc(100% - 30px);;
+    width: calc(100% - 30px);
     display: flex;
     align-self: flex-end;
     flex-direction: column;

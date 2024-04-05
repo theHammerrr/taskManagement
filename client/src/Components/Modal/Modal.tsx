@@ -1,30 +1,29 @@
-import React, { ReactElement, useState } from "react";
+import React from "react";
 import "./Modal.css";
 
 export interface iModalProps extends React.PropsWithChildren {
   handleOnClose: () => void;
   handleOnSave: () => void;
-  children?: ReactElement;
 }
 
+const CLOSE_BUTTON_TEXT = "ביטול";
+const SAVE_BUTTON_TEXT = "שמירה";
+
 const Modal: React.FC<iModalProps> = ({
-  //   showModal = false,
   handleOnClose,
   handleOnSave,
   children,
 }: iModalProps) => {
-  //   const [isModalOpen, setModalOpen] = useState<boolean>(true);
   return (
     <div className={"modal-overlay"}>
       <div className="modal-content">
-        {/* <span className="title">{title}</span> */}
         {children}
         <div className="modal-bottom-buttons">
           <button className="modal-close" onClick={handleOnClose}>
-            ביטול
+            {CLOSE_BUTTON_TEXT}
           </button>
           <button className="modal-save" onClick={handleOnSave}>
-            שמירה
+            {SAVE_BUTTON_TEXT}
           </button>
         </div>
       </div>

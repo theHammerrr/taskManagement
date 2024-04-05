@@ -1,32 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { iTask } from "../../CommonInterfaces/Task";
+import { useTasksContext } from "../Contexts/TasksProvider";
 import "./Task.css";
+import TaskModal from "./TaskModal";
 import pencilIcon from "/public/icons/pencil.svg";
 import trashIcon from "/public/icons/trash.svg";
-import TaskModal from "./TaskModal";
-import { iTask } from "../../CommonInterfaces/Task";
-import {
-  editExistingTask,
-  getTaskChildern,
-  isTaskWithChildren,
-} from "../../API/handleData";
 
 interface iTaskProps {
   currentTask: iTask;
-  onRemoveTask: (task: iTask) => void;
-  onEditCallback?: () => void;
 }
 
-const Task: React.FC<iTaskProps> = ({
-  currentTask,
-  onRemoveTask,
-  onEditCallback,
-}: iTaskProps) => {
+const Task: React.FC<iTaskProps> = ({ currentTask }: iTaskProps) => {
   const [isExpended, setExpended] = useState<boolean>(false);
-  const [isEditTask, setEditTask] = useState<boolean>(false);
+  const [isEditTask, setIsEditTask] = useState<boolean>(false);
   const [isHover, setIsHover] = useState<boolean>(false);
   const editModalTitle = `עריכת ${currentTask.description}`;
 
-  const hasChildren = isTaskWithChildren(currentTask);
+  const { getTaskChildren, taskList, removeTask, editTask } = useTasksContext();
+  const [taskChildren, setTaskChildren] = useState<iTask[]>(
+    getTaskChildren(currentTask)
+  );
+
+  useEffect(() => {
+    setTaskChildren(getTaskChildren(currentTask));
+  }, [taskList]);
+
   const handleMouseOnLeave = () => {
     setIsHover(false);
   };
@@ -39,21 +37,20 @@ const Task: React.FC<iTaskProps> = ({
   };
 
   const handleRemoveTask = () => {
-    onRemoveTask(currentTask);
+    removeTask(currentTask);
   };
   const openEditTaskModal = () => {
-    setEditTask(true);
+    setIsEditTask(true);
   };
 
   const closeEditTaskModal = () => {
-    setEditTask(false);
+    setIsEditTask(false);
   };
 
   const handleSaveEditModal = (editedTask: iTask) => {
     try {
-      editExistingTask(editedTask);
+      editTask(editedTask);
       closeEditTaskModal();
-      onEditCallback?.();
     } catch (err) {
       alert((err as Error).message);
     }
@@ -67,7 +64,7 @@ const Task: React.FC<iTaskProps> = ({
         onMouseLeave={handleMouseOnLeave}
       >
         <div className="task-start">
-          {hasChildren && (
+          {!!taskChildren.length && (
             <button className="expend-button" onClick={handleExpandClick}>
               <div
                 className={`arrow ${
@@ -87,13 +84,9 @@ const Task: React.FC<iTaskProps> = ({
         )}
       </div>
       {isExpended &&
-        getTaskChildern(currentTask).map((currentTask: iTask) => (
+        taskChildren.map((currentTask: iTask) => (
           <div className="child-task" key={currentTask.id}>
-            <Task
-              currentTask={currentTask}
-              onRemoveTask={onRemoveTask}
-              onEditCallback={onEditCallback}
-            />
+            <Task currentTask={currentTask} />
           </div>
         ))}
       {isEditTask && (

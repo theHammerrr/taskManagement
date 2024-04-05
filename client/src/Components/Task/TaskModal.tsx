@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   eTaskStatus,
   iTask,
   taskPossibleStates,
 } from "../../CommonInterfaces/Task";
-import {
-  findPossibleParents,
-  findTaskWithDescription,
-  findTaskWithId,
-} from "../../API/handleData";
+import { useTasksContext } from "../Contexts/TasksProvider";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import Modal, { iModalProps } from "../Modal/Modal";
 import "./TaskModal.css";
@@ -38,19 +34,17 @@ const TaskModal: React.FC<TaskModalProps> = ({
   givenTask,
 }) => {
   const [currentTask, setCurrentTask] = useState<iTask>(givenTask || demoTask);
+
+  const { findTaskWithId, findPossibleParents, findTaskWithDescription } =
+    useTasksContext();
   const [currentParent, setCurrentParent] = useState<iTask | undefined>(
     findTaskWithId(currentTask.parentId)
   );
+
   const [possibleParents, setPossibleParents] = useState<string[]>([
     UNLINK_TASK_TEXT,
+    ...findPossibleParents(currentTask).map((task) => task.description),
   ]);
-
-  useEffect(() => {
-    setPossibleParents([
-      UNLINK_TASK_TEXT,
-      ...findPossibleParents(currentTask).map((task) => task.description),
-    ]);
-  }, []);
 
   const handleChangeTask = <T,>(value: T, property: keyof iTask) => {
     setCurrentTask({

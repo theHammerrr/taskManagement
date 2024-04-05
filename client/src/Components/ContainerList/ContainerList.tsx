@@ -3,22 +3,13 @@ import {
   eTaskStatusFilter,
   eTaskStatusFilterAll,
 } from "../../CommonInterfaces/FilterTasks";
-import { iTask } from "../../CommonInterfaces/Task";
-import { eTaskStatus } from "../../CommonInterfaces/Task";
-import {
-  filterTasks,
-  getAllTasks,
-  getTaskDownHierarchy,
-  getTaskListRootParents,
-  initTaskListRootParents,
-  removeTask,
-} from "../../API/handleData";
+import { eTaskStatus, iTask } from "../../CommonInterfaces/Task";
 import { useDebounce } from "../../helpers/debounce";
+import { useTasksContext } from "../Contexts/TasksProvider";
 import DropdownFilter from "../DropdownFilter/DropdownFilter";
 import Task from "../Task/Task";
 import NewTaskButton from "../newTask/NewTaskButton";
 import "./ContainerList.css";
-import { useTasksContext } from "../Contexts/TasksProvider";
 
 const possibleStates = [
   eTaskStatusFilterAll.ALL,
@@ -29,8 +20,7 @@ const STATUS_FILTER_TEXT = "סינון לפי:";
 const NAME_FILTER_TEXT = "חפש לפי שם";
 
 const ContainerList: React.FC = () => {
-  const tasksContext = useTasksContext();
-  console.log(tasksContext);
+  const { taskList, filterTasks } = useTasksContext();
 
   const [statusFilter, setStatusFilter] = useState<eTaskStatusFilter>(
     eTaskStatusFilterAll.ALL
@@ -38,19 +28,22 @@ const ContainerList: React.FC = () => {
 
   const [textFilter, setTextFilter] = useState<string>("");
   const [displayTaskList, setDisplayTaskList] = useState<iTask[]>(
-    initTaskListRootParents()
+    taskList.filter((task) => task.parentId === undefined)
   );
 
-  const handleSetDisplayTaskList = (newList: iTask[]) => {
-    setDisplayTaskList(getTaskListRootParents(newList));
-  };
+  const handleFilterTasks = (): void => {
+    const filteredTasks = filterTasks({
+      textFilter,
+      statusFilter,
+    });
 
-  const handleFilterTasks = (): iTask[] => {
-    return filterTasks({ textFilter, statusFilter });
+    setDisplayTaskList([
+      ...filteredTasks.filter((task: iTask) => task.parentId === undefined),
+    ]);
   };
 
   const searchTextDebounce = useDebounce(() => {
-    handleSetDisplayTaskList(handleFilterTasks());
+    handleFilterTasks();
   }, 300);
 
   useEffect(() => {
@@ -62,24 +55,15 @@ const ContainerList: React.FC = () => {
   };
 
   useEffect(() => {
-    handleSetDisplayTaskList(handleFilterTasks());
+    handleFilterTasks();
   }, [statusFilter]);
+
+  useEffect(() => {
+    handleFilterTasks();
+  }, [taskList]);
 
   const handleChangeFilter = (value: string) => {
     setStatusFilter(value as eTaskStatusFilter);
-  };
-
-  const handleRemoveTask = (task: iTask) => {
-    const taskGenerationDown = getTaskDownHierarchy(task);
-    taskGenerationDown.forEach((task) => {
-      removeTask(task);
-    });
-
-    handleSetDisplayTaskList(handleFilterTasks());
-  };
-
-  const changeTaskListCallback = () => {
-    handleSetDisplayTaskList(handleFilterTasks());
   };
 
   return (
@@ -100,16 +84,11 @@ const ContainerList: React.FC = () => {
       </div>
       <div className="tasks-container">
         {displayTaskList.map((currentTask: iTask) => (
-          <Task
-            key={currentTask.id}
-            currentTask={currentTask}
-            onRemoveTask={handleRemoveTask}
-            onEditCallback={changeTaskListCallback}
-          />
+          <Task key={currentTask.id} currentTask={currentTask} />
         ))}
       </div>
       <div className="new-task-button">
-        <NewTaskButton onSaveCallback={changeTaskListCallback} />
+        <NewTaskButton />
       </div>
     </div>
   );

@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import newTaskIcon from "./newTask.svg";
+import { iTask } from "../../CommonInterfaces/Task";
+import { useTasksContext } from "../Contexts/TasksProvider";
 import TaskModal from "../Task/TaskModal";
 import "./NewTaskButton.css";
-import { iTask } from "../../CommonInterfaces/Task";
-import { addNewTask } from "../../API/handleData";
+import newTaskIcon from "/public/icons/newTask.svg";
 
-interface iNewTaskButtonProps {
-  onSaveCallback?: () => void;
-}
+const modalTitle = "יצירת משימה";
 
-const NewTaskButton: React.FC<iNewTaskButtonProps> = ({ onSaveCallback }) => {
+const NewTaskButton: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const modalTitle = "יצירת משימה";
+  const { addNewTask } = useTasksContext();
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -25,7 +23,6 @@ const NewTaskButton: React.FC<iNewTaskButtonProps> = ({ onSaveCallback }) => {
     try {
       addNewTask(newTask);
       handleCloseModal();
-      onSaveCallback?.();
     } catch (err) {
       alert((err as Error).message);
     }
