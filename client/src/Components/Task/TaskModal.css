@@ -1,46 +1,18 @@
-.modal-children {
-    font-size: 3vh;
-    display: flex;
-    flex-direction: column;
+.modal-children { 
+    /* TODO: use media query */
+    font-size: 25px;
     gap: 4vh;
 }
 
-.input-container {
+.property-container {
     display: flex;
+    width: 135px;
     flex-direction: column;
-    gap: 1vh;
     margin-top: 2%;
-    height: 80%;
+    margin-bottom: 5%;
+    gap: 8px;
 }
 
-.input {
-    width: 60%;
-}
-
-.dropdown-status {
-    display: flex;
-    flex-direction: column;
-}
-
-.dropdown-lint-task {
-    display: flex;
-    flex-direction: column;
-}
-
-.modal-bottom-buttons {
-    display: flex;
-    flex-direction: row;
-    gap : 10px;
-    margin-top: auto;
-    justify-content: flex-end;
-}
-
-.modal-bottom-buttons button {
-    padding: 2% 5%;
-    cursor: pointer;
-    border: none;
-    color: white;
-}
 
 .title {
     font-size: 50px;

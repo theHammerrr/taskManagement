@@ -12,7 +12,7 @@ const SAVE_BUTTON_TEXT = "שמירה";
 const Modal: React.FC<iModalProps> = ({
   handleOnClose,
   handleOnSave,
-  children,
+  children,// TODO: ADD title as prop div to header and div for content
 }: iModalProps) => {
   return (
     <div className={"modal-overlay"}>

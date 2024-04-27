@@ -4,7 +4,9 @@ export enum eTaskStatusFilterAll {
     ALL = "הכל"
 }
 
-export type eTaskStatusFilter = eTaskStatus | eTaskStatusFilterAll
+export const ALL_STATUS = 'הכל' //change in filter to use ALL_STATUS
+
+export type eTaskStatusFilter = eTaskStatus | typeof ALL_STATUS
 
 export interface iFilterTasks {
     textFilter: string,

@@ -21,7 +21,7 @@ const demoTask = {
   status: eTaskStatus.ACTIVE,
 };
 
-const UNLINK_TASK_TEXT: string = "בטל קישור למטרה";
+const UNLINK_TASK_TEXT = "בטל קישור למטרה";
 const STATUS_TEXT = "סטטוס:";
 const NAME_TEXT = "שם:";
 const NAME_PLACEHOLDER = "שם...";
@@ -33,7 +33,8 @@ const TaskModal: React.FC<TaskModalProps> = ({
   onSaveTask,
   givenTask,
 }) => {
-  const [currentTask, setCurrentTask] = useState<iTask>(givenTask || demoTask);
+  const [currentTask, setCurrentTask] = useState<iTask>(givenTask || demoTask); 
+  //change to have multipule state for each task propertie, won't need to send an id
 
   const { findTaskWithId, findPossibleParents, findTaskWithDescription } =
     useTasksContext();
@@ -41,72 +42,71 @@ const TaskModal: React.FC<TaskModalProps> = ({
     findTaskWithId(currentTask.parentId)
   );
 
-  const [possibleParents, setPossibleParents] = useState<string[]>([
+  const possibleParents = [
     UNLINK_TASK_TEXT,
     ...findPossibleParents(currentTask).map((task) => task.description),
-  ]);
+  ];
 
-  const handleChangeTask = <T,>(value: T, property: keyof iTask) => {
-    setCurrentTask({
-      ...currentTask,
-      [property]: value,
-    });
-  };
+const handleChangeTask = <T,>(value: T, property: keyof iTask) => {
+  setCurrentTask({
+    ...currentTask,
+    [property]: value,
+  });
+};
 
-  const handleChangeParentDropdown = (parentDiscription: string) => {
-    setCurrentParent(findTaskWithDescription(parentDiscription));
-  };
+const handleChangeParentDropdown = (parentDiscription: string) => {
+  setCurrentParent(findTaskWithDescription(parentDiscription));
+};
 
-  const handleSave = () => {
-    if (currentTask.description.trim() === "") {
-      alert("Can not save while description is empty");
-    } else {
-      onSaveTask({ ...currentTask, parentId: currentParent?.id });
-    }
-  };
+const handleSave = () => {
+  if (!!currentTask.description.trim().length) {
+    alert("Can not save while description is empty");
+  } else {
+    onSaveTask({ ...currentTask, parentId: currentParent?.id });
+  }
+};
 
-  const handleDescriptionChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    handleChangeTask<string>(event.currentTarget.value, "description");
-  };
+const handleDescriptionChange = (
+  event: React.ChangeEvent<HTMLInputElement>
+) => {
+  handleChangeTask<string>(event.currentTarget.value, "description");
+};
 
-  const handleDropdownChange = (status: string) => {
-    handleChangeTask<eTaskStatus>(status as eTaskStatus, "status");
-  };
+const handleDropdownChange = (status: string) => {
+  handleChangeTask<eTaskStatus>(status as eTaskStatus, "status");
+};
 
-  return (
-    <Modal handleOnClose={handleOnClose} handleOnSave={handleSave}>
-      <div className="modal-children">
-        <span className="title">{title}</span>
-        <div className="input-container">
-          <span>{NAME_TEXT}</span>
-          <input
-            className="input"
-            value={currentTask.description}
-            placeholder={NAME_PLACEHOLDER}
-            onChange={handleDescriptionChange}
-          />
-        </div>
-        <div className="dropdown-status">
-          <span>{STATUS_TEXT}</span>
-          <DropdownFilter
-            currentFilter={currentTask.status}
-            handleClickItem={handleDropdownChange}
-            possibleStates={taskPossibleStates}
-          />
-        </div>
-        <div className="dropdown-lint-task">
-          <span>{LINK_TEXT}</span>
-          <DropdownFilter
-            currentFilter={currentParent?.description || UNLINK_TASK_TEXT}
-            handleClickItem={handleChangeParentDropdown}
-            possibleStates={possibleParents}
-          />
-        </div>
+return (
+  <Modal handleOnClose={handleOnClose} handleOnSave={handleSave}>
+    <div className="modal-children">
+      <span className="title">{title}</span>
+      <div className="property-container">
+        <span>{NAME_TEXT}</span>
+        <input
+          value={currentTask.description}
+          placeholder={NAME_PLACEHOLDER}
+          onChange={handleDescriptionChange}
+        />
       </div>
-    </Modal>
-  );
+      <div className="property-container">
+        <span>{STATUS_TEXT}</span>
+        <DropdownFilter
+          currentFilter={currentTask.status}
+          handleClickItem={handleDropdownChange}
+          possibleStates={taskPossibleStates}
+        />
+      </div>
+      <div className="property-container">
+        <span>{LINK_TEXT}</span>
+        <DropdownFilter
+          currentFilter={currentParent?.description || UNLINK_TASK_TEXT}
+          handleClickItem={handleChangeParentDropdown}
+          possibleStates={possibleParents}
+        />
+      </div>
+    </div>
+  </Modal>
+);
 };
 
 export default TaskModal;

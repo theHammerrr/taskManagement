@@ -45,7 +45,7 @@ const TasksContext = React.createContext<iTaskContext>({
   findPossibleParents: function (task: iTask): iTask[] {
     throw new Error("Function not implemented.");
   },
-  findTaskWithDescription: function (
+  findTaskWithDescription: function ( //TODO: change to log out of context
     taskDescription: string
   ): iTask | undefined {
     throw new Error("Function not implemented.");
@@ -54,7 +54,7 @@ const TasksContext = React.createContext<iTaskContext>({
 
 const getTaskListRootParents = (allTasks: iTask[], tasks: iTask[]) => {
   const tasksUpHierarchy: iTask[] = [];
-  tasks.map((currentTask: iTask) =>
+  tasks.forEach((currentTask) =>
     tasksUpHierarchy.push(...getTaskUpHierarchy(allTasks, currentTask))
   );
 
@@ -102,10 +102,9 @@ export const getTaskDownHierarchy = (
 // return all the task up generations including the task itself
 const getTaskUpHierarchy = (
   allTasks: iTask[],
-  currentTask: iTask | undefined
+  currentTask?: iTask
 ): iTask[] => {
   if (currentTask === undefined) return [];
-  if (currentTask.parentId === undefined) return [currentTask];
 
   const upHierarchy = [
     currentTask,
@@ -114,43 +113,25 @@ const getTaskUpHierarchy = (
       allTasks.find((task: iTask) => task.id === currentTask?.parentId)
     ),
   ];
+
   return upHierarchy;
 };
 
-const removeDuplicatesTasks = (tasks: iTask[]): iTask[] => {
-  const seen = new Set();
+const removeDuplicatesTasks = (tasks: iTask[]): iTask[] => [...new Set(tasks)];
 
-  return tasks.filter((task: iTask) => {
-    const duplicate = seen.has(task.id);
-    seen.add(task.id);
-    return !duplicate;
-  });
-};
-
-const isTaskExists = (taskList: iTask[], currentTask: iTask): boolean => {
-  return taskList.find(
-    (task: iTask) =>
+const isTaskExists = (taskList: iTask[], currentTask: iTask): boolean => { //TODO: filter only name and change id to uuid
+  return taskList.some(
+    (task) =>
       task.description === currentTask.description && task.id !== currentTask.id
   )
-    ? true
-    : false;
 };
 
 const getTasks = (): iTask[] => {
   const tasks = localStorage.getItem(TASKS_LOCALSTORAGE_KEY);
-  if (tasks) return JSON.parse(tasks);
-  else return taskListJson;
+  if (tasks) return JSON.parse(tasks); //chant to trinary
+  return taskListJson;
 };
 
-const findPossibleParents = (taskList: iTask[], currentTask: iTask) => {
-  const allHierarchy = getTaskDownHierarchy(taskList, currentTask).map(
-    (task) => task.id
-  );
-
-  return taskList.filter((task: iTask) => !allHierarchy.includes(task.id));
-};
-
-const useTasksContext = () => useContext(TasksContext);
 const TASKS_LOCALSTORAGE_KEY = "tasks";
 
 const TasksProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -174,7 +155,7 @@ const TasksProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   const filterTasks = (filterData: iFilterTasks): iTask[] => {
     const filteredTasks = taskList.filter(
-      (currentTask) =>
+      (currentTask) => 
         currentTask.description.includes(filterData.textFilter) &&
         (filterData.statusFilter === eTaskStatusFilterAll.ALL ||
           currentTask.status === filterData.statusFilter)
@@ -244,4 +225,4 @@ const TasksProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 };
 
 export default TasksProvider;
-export { useTasksContext };
+export const useTasksContext = () => useContext(TasksContext);
